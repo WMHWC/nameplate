@@ -8,6 +8,7 @@
 --ui:"WandoCleansea","Malgun Gothic","맑은 고딕","Apple SD Gothic Neo",sans-serif;--card:"WandoCleansea","Malgun Gothic",sans-serif}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
+html{overflow-y:scroll;scrollbar-gutter:stable}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ui)}
 .wrap{display:grid;grid-template-columns:1fr 500px;gap:24px;padding:24px max(16px,env(safe-area-inset-left,0px));align-items:start}
 .panel{order:2;position:sticky;top:24px;max-height:calc(100vh - 48px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:10px}
@@ -222,7 +223,7 @@ textarea:focus,input:focus,button:focus-visible{outline:2px solid var(--accent);
 <main class="pv" id="pv">
  <div class="pvbar" id="pvbar"><span class="pvl">미리보기</span>
   <button type="button" id="zOut" aria-label="작게">－</button><span class="pvn" id="zLab"></span><button type="button" id="zIn" aria-label="크게">＋</button>
-  <button type="button" class="pvt" id="zOne">한 장 크게</button><button type="button" class="pvt" id="zAll">전부 한눈에</button></div>
+  <button type="button" class="pvt" id="zOne">기본 크기</button><button type="button" class="pvt" id="zAll">전부 한눈에</button></div>
  <div class="sheets" id="sheets"></div></main>
 </div>
 <div class="modal" id="prModal" hidden><div class="mbox" role="dialog" aria-modal="true" aria-labelledby="prTitle">
@@ -261,7 +262,7 @@ lockTick();
 /* ── 그림 설정 ──
    인터넷 주소로 쓸 때는 같은 폴더의 config.json 이 있으면 그걸 먼저 읽어요.
    그래서 config.json 과 images 폴더만 바꾸면 멀리서도 그림이 바뀌어요. */
-let CFG={"배경": [{"이름": "봄", "파일": "images/spring.jpg"}, {"이름": "여름", "파일": "images/summer.jpg"}, {"이름": "가을", "파일": "images/autumn.jpg"}, {"이름": "겨울", "파일": "images/winter.jpg"}], "위쪽_로고": "images/logo_top.png", "위쪽_문구": "images/slogan.png", "아래쪽_로고": "images/logo_bottom.png", "뒷면_연락망_그림": "images/sos_back_blank.jpg", "업데이트": [{"버전": "1.9", "날짜": "2026-11-02", "내용": "미리보기 위에 크기 조절 막대가 생겼어요. ＋/－로 크게·작게, '한 장 크게', '전부 한눈에'로 바로 바꿀 수 있어요."}, {"버전": "1.8", "날짜": "2026-11-02", "내용": "'🖨 인쇄 화면만' 버튼으로 설정 칸을 숨기고 인쇄될 종이만 크게 볼 수 있어요. 오른쪽 위 '⚙ 설정 열기'로 돌아와요."}, {"버전": "1.7", "날짜": "2026-11-02", "내용": "설정 칸을 오른쪽으로 옮기고 넓혔어요. 미리보기는 A4 한 장이 화면에 딱 맞게 보이고, 장마다 '1 / 3장'처럼 페이지가 표시돼요."}, {"버전": "1.6", "날짜": "2026-11-02", "내용": "이름 칸 설명을 칸 안으로 옮기고, 아래 'O명 → A4 O장' 글씨를 없앴어요."}, {"버전": "1.5", "날짜": "2026-11-02", "내용": "①~④ 단계를 위쪽 버튼으로 골라요. 새로고침하면 항상 ① 이름부터 시작해요. (입력한 내용은 그대로 남아요)"}, {"버전": "1.4", "날짜": "2026-11-02", "내용": "화면과 비상연락망 제목까지 모든 글씨를 완도 청정바다체로 바꿨어요."}, {"버전": "1.3", "날짜": "2026-11-02", "내용": "'정보' 버튼이 생겼어요. 명찰에 쓰는 글씨체와 그림·로고를 볼 수 있어요."}, {"버전": "1.2", "날짜": "2026-11-02", "내용": "①~④ 단계를 눌러서 펴고 접을 수 있어요. 인쇄하기를 누르면 인쇄 설정을 먼저 알려줘요."}, {"버전": "1.1", "날짜": "2026-11-02", "내용": "글씨 굵기 버튼을 '굵게 / 보통'으로 바꿨어요. 비상연락망 긴 설명을 없애고, 연락처는 최대 5명까지라고 알려줘요."}, {"버전": "1.0", "날짜": "2026-11-02", "내용": "비상연락망 위쪽 제목을 직접 바꿀 수 있어요. (기본: 마음건강팀) 비워두면 '비상 연락망'만 나와요."}], "정보": {"글씨체": [{"이름": "완도 청정바다체 (보통·굵게)", "쓰는 곳": "화면과 명찰의 모든 글씨", "출처": "저작권 완도군 · 디자인 윤디자인", "글꼴": "WandoCleansea"}], "그림": [{"이름": "위쪽 로고", "쓰는 곳": "명찰 왼쪽 위", "파일": "images/logo_top.png"}, {"이름": "위쪽 문구", "쓰는 곳": "명찰 오른쪽 위 ('참여자치 실현! 함께 여는 새로운 완도')", "파일": "images/slogan.png"}, {"이름": "아래쪽 로고", "쓰는 곳": "명찰 아래 칸", "파일": "images/logo_bottom.png"}, {"이름": "배경 그림 (봄·여름·가을·겨울)", "쓰는 곳": "명찰 가운데", "파일": "images/spring.jpg"}, {"이름": "비상연락망 그림", "쓰는 곳": "뒷면 비상연락망", "파일": "images/sos_back_blank.jpg"}]}};
+let CFG={"배경": [{"이름": "봄", "파일": "images/spring.jpg"}, {"이름": "여름", "파일": "images/summer.jpg"}, {"이름": "가을", "파일": "images/autumn.jpg"}, {"이름": "겨울", "파일": "images/winter.jpg"}], "위쪽_로고": "images/logo_top.png", "위쪽_문구": "images/slogan.png", "아래쪽_로고": "images/logo_bottom.png", "뒷면_연락망_그림": "images/sos_back_blank.jpg", "업데이트": [{"버전": "1.9", "날짜": "2026-11-02", "내용": "미리보기 위에 크기 조절 막대가 생겼어요. ＋/－로 크게·작게, '기본 크기', '전부 한눈에'로 바로 바꿀 수 있어요."}, {"버전": "1.8", "날짜": "2026-11-02", "내용": "'🖨 인쇄 화면만' 버튼으로 설정 칸을 숨기고 인쇄될 종이만 크게 볼 수 있어요. 오른쪽 위 '⚙ 설정 열기'로 돌아와요."}, {"버전": "1.7", "날짜": "2026-11-02", "내용": "설정 칸을 오른쪽으로 옮기고 넓혔어요. 미리보기는 A4 한 장이 화면에 딱 맞게 보이고, 장마다 '1 / 3장'처럼 페이지가 표시돼요."}, {"버전": "1.6", "날짜": "2026-11-02", "내용": "이름 칸 설명을 칸 안으로 옮기고, 아래 'O명 → A4 O장' 글씨를 없앴어요."}, {"버전": "1.5", "날짜": "2026-11-02", "내용": "①~④ 단계를 위쪽 버튼으로 골라요. 새로고침하면 항상 ① 이름부터 시작해요. (입력한 내용은 그대로 남아요)"}, {"버전": "1.4", "날짜": "2026-11-02", "내용": "화면과 비상연락망 제목까지 모든 글씨를 완도 청정바다체로 바꿨어요."}, {"버전": "1.3", "날짜": "2026-11-02", "내용": "'정보' 버튼이 생겼어요. 명찰에 쓰는 글씨체와 그림·로고를 볼 수 있어요."}, {"버전": "1.2", "날짜": "2026-11-02", "내용": "①~④ 단계를 눌러서 펴고 접을 수 있어요. 인쇄하기를 누르면 인쇄 설정을 먼저 알려줘요."}, {"버전": "1.1", "날짜": "2026-11-02", "내용": "글씨 굵기 버튼을 '굵게 / 보통'으로 바꿨어요. 비상연락망 긴 설명을 없애고, 연락처는 최대 5명까지라고 알려줘요."}, {"버전": "1.0", "날짜": "2026-11-02", "내용": "비상연락망 위쪽 제목을 직접 바꿀 수 있어요. (기본: 마음건강팀) 비워두면 '비상 연락망'만 나와요."}], "정보": {"글씨체": [{"이름": "완도 청정바다체 (보통·굵게)", "쓰는 곳": "화면과 명찰의 모든 글씨", "출처": "저작권 완도군 · 디자인 윤디자인", "글꼴": "WandoCleansea"}], "그림": [{"이름": "위쪽 로고", "쓰는 곳": "명찰 왼쪽 위", "파일": "images/logo_top.png"}, {"이름": "위쪽 문구", "쓰는 곳": "명찰 오른쪽 위 ('참여자치 실현! 함께 여는 새로운 완도')", "파일": "images/slogan.png"}, {"이름": "아래쪽 로고", "쓰는 곳": "명찰 아래 칸", "파일": "images/logo_bottom.png"}, {"이름": "배경 그림 (봄·여름·가을·겨울)", "쓰는 곳": "명찰 가운데", "파일": "images/spring.jpg"}, {"이름": "비상연락망 그림", "쓰는 곳": "뒷면 비상연락망", "파일": "images/sos_back_blank.jpg"}]}};
 const $=id=>document.getElementById(id);
 const st={bg:'',nw:'700',fw:'700'};
 let contacts=[{n:'',p:''}],backOn=false,flipOn=true;
@@ -414,7 +415,7 @@ document.querySelector('.tabs').addEventListener('click',e=>{const b=e.target.cl
 try{localStorage.removeItem('mp5_open')}catch(e){}
 if('scrollRestoration' in history)history.scrollRestoration='manual';window.scrollTo(0,0);
 window.addEventListener('beforeprint',fit);
-// 미리보기 크기 (A4 = 793.7 × 1122.5px). 모드: 'one' 한 장이 화면 높이에 쏙 / 'all' 전부 한눈에 / 숫자 = 한 줄에 몇 장
+// 미리보기 크기 (A4 = 793.7 × 1122.5px). 모드: 'one' 기본 크기(A4 한 장이 화면 높이에 쏙) / 'all' 전부 한눈에 / 숫자 = 한 줄에 몇 장
 let pvMode='one';
 function fitPreview(){const W=$('pv').clientWidth;if(!W)return;const PW=793.7,PH=1122.5,G=20,LAB=40;
   const n=Math.max(1,document.querySelectorAll('.sheet').length),H=window.innerHeight-48-$('pvbar').offsetHeight;
