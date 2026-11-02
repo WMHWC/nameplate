@@ -46,6 +46,7 @@ textarea:focus,input:focus,button:focus-visible{outline:2px solid var(--accent);
 .contacts input{padding:7px 8px;font-size:15px}
 .contacts .x{width:30px;height:34px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#b23b3b;font-size:15px;cursor:pointer}
 .contacts .x:disabled{opacity:.3;cursor:default}
+.full{margin-top:8px;padding:8px 10px;border-radius:8px;background:#fff4e5;color:#a35a00;font-size:13.5px;text-align:center}
 .addrow{font:inherit;font-weight:700;font-size:14px;margin-top:8px;padding:8px;border:1.5px dashed var(--accent);border-radius:8px;background:#fff;color:var(--accent);cursor:pointer;width:100%}
 .sheets{display:flex;flex-wrap:wrap;gap:20px;zoom:.55}
 .sheet{width:210mm;height:297mm;background:#fff;position:relative;box-shadow:0 2px 10px rgba(0,0,0,.15);overflow:hidden;flex:none}
@@ -134,7 +135,7 @@ textarea:focus,input:focus,button:focus-visible{outline:2px solid var(--accent);
 
  <div>
   <div class="row"><label class="lab" for="names">① 이름</label>
-   <div class="seg weight" id="nameW"><button data-v="700">Bold</button><button data-v="400">Regular</button></div></div>
+   <div class="seg weight" id="nameW"><button data-v="700">굵게</button><button data-v="400">보통</button></div></div>
   <textarea id="names" spellcheck="false">김승호, 김종구, 김환, 남궁민수</textarea>
   <div class="hint">쉼표(,)나 줄바꿈으로 나눠요.</div>
   <div class="count" id="count"></div>
@@ -144,7 +145,7 @@ textarea:focus,input:focus,button:focus-visible{outline:2px solid var(--accent);
 
  <div>
   <div class="row"><label class="lab" for="foot">③ 아래 글씨</label>
-   <div class="seg weight" id="footW"><button data-v="700">Bold</button><button data-v="400">Regular</button></div></div>
+   <div class="seg weight" id="footW"><button data-v="700">굵게</button><button data-v="400">보통</button></div></div>
   <input type="text" id="foot" value="완도군 정신건강 복지센터">
  </div>
 
@@ -152,11 +153,11 @@ textarea:focus,input:focus,button:focus-visible{outline:2px solid var(--accent);
   <span class="lab">④ 뒷면 비상연락망</span>
   <label class="switch"><input type="checkbox" id="backOn"> 뒷면에 비상연락망 넣기 (접어서 쓰기)</label>
   <div id="backBox" hidden>
-   <div class="hint">켜면 <b>A4 한 장에 1명</b>씩 나와요. 위는 이름, 아래는 연락망이에요. 바깥 선을 따라 자르고 가운데 선에서 반으로 접어 꽂아요.</div>
-   <label class="hint" for="team" style="display:block;margin-top:10px;color:var(--ink);font-weight:700;font-size:13.5px">연락망 제목 (비워두면 '비상 연락망'만 나와요)</label>
+   <label class="hint" for="team" style="display:block;margin-top:12px;color:var(--ink);font-weight:700;font-size:13.5px">연락망 제목 (비워두면 '비상 연락망'만 나와요)</label>
    <input type="text" id="team" value="마음건강팀" style="margin-top:4px" placeholder="예: 마음건강팀">
    <div class="contacts" id="contacts"></div>
    <button class="addrow" id="addrow">＋ 연락처 추가</button>
+   <div class="full" id="full" hidden>⚠ 연락처는 <b>최대 5명</b>까지 넣을 수 있어요.</div>
    <label class="switch" style="margin-top:10px;font-weight:400;font-size:13.5px"><input type="checkbox" id="flipOn"> 연락망 거꾸로 인쇄 (접은 뒤 옆으로 뒤집으면 바로 보임)</label>
   </div>
  </div>
@@ -195,7 +196,7 @@ lockTick();
 /* ── 그림 설정 ──
    인터넷 주소로 쓸 때는 같은 폴더의 config.json 이 있으면 그걸 먼저 읽어요.
    그래서 config.json 과 images 폴더만 바꾸면 멀리서도 그림이 바뀌어요. */
-let CFG={"배경": [{"이름": "봄", "파일": "images/spring.jpg"}, {"이름": "여름", "파일": "images/summer.jpg"}, {"이름": "가을", "파일": "images/autumn.jpg"}, {"이름": "겨울", "파일": "images/winter.jpg"}], "위쪽_로고": "images/logo_top.png", "위쪽_문구": "images/slogan.png", "아래쪽_로고": "images/logo_bottom.png", "뒷면_연락망_그림": "images/sos_back_blank.jpg", "업데이트": [{"버전": "1.0", "날짜": "2026-11-02", "내용": "비상연락망 위쪽 제목을 직접 바꿀 수 있어요. (기본: 마음건강팀) 비워두면 '비상 연락망'만 나와요."}]};
+let CFG={"배경": [{"이름": "봄", "파일": "images/spring.jpg"}, {"이름": "여름", "파일": "images/summer.jpg"}, {"이름": "가을", "파일": "images/autumn.jpg"}, {"이름": "겨울", "파일": "images/winter.jpg"}], "위쪽_로고": "images/logo_top.png", "위쪽_문구": "images/slogan.png", "아래쪽_로고": "images/logo_bottom.png", "뒷면_연락망_그림": "images/sos_back_blank.jpg", "업데이트": [{"버전": "1.1", "날짜": "2026-11-02", "내용": "글씨 굵기 버튼을 '굵게 / 보통'으로 바꿨어요. 비상연락망 긴 설명을 없애고, 연락처는 최대 5명까지라고 알려줘요."}, {"버전": "1.0", "날짜": "2026-11-02", "내용": "비상연락망 위쪽 제목을 직접 바꿀 수 있어요. (기본: 마음건강팀) 비워두면 '비상 연락망'만 나와요."}]};
 const $=id=>document.getElementById(id);
 const st={bg:'',nw:'700',fw:'700'};
 let contacts=[{n:'',p:''}],backOn=false,flipOn=true;
@@ -274,7 +275,8 @@ function contactsUI(){
   const f=document.activeElement&&document.activeElement.id;
   $('contacts').innerHTML='<span></span><span class="h">이름</span><span class="h">연락처</span><span></span>'+contacts.map((c,i)=>
    `<span class="h">${i+1}</span><input type="text" id="cn${i}" data-i="${i}" data-k="n" value="${esc(c.n)}" aria-label="${i+1}번 이름"><input type="tel" id="cp${i}" data-i="${i}" data-k="p" value="${esc(c.p)}" placeholder="01000000000" aria-label="${i+1}번 연락처"><button class="x" data-del="${i}" title="이 줄 지우기" aria-label="${i+1}번 지우기" ${contacts.length<=1?'disabled':''}>✕</button>`).join('');
-  $('addrow').hidden=contacts.length>=5;
+  $('addrow').hidden=contacts.length>=5;$('full').hidden=contacts.length<5;
+  $('addrow').textContent=`＋ 연락처 추가 (${contacts.length}/5)`;
   if(f&&$(f))$(f).focus()}
 function render(){
   tiles();
