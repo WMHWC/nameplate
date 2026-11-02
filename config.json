@@ -1,0 +1,24 @@
+{
+  "배경": [
+    {
+      "이름": "봄",
+      "파일": "images/spring.jpg"
+    },
+    {
+      "이름": "여름",
+      "파일": "images/summer.jpg"
+    },
+    {
+      "이름": "가을",
+      "파일": "images/autumn.jpg"
+    },
+    {
+      "이름": "겨울",
+      "파일": "images/winter.jpg"
+    }
+  ],
+  "위쪽_로고": "images/logo_top.png",
+  "위쪽_문구": "images/slogan.png",
+  "아래쪽_로고": "images/logo_bottom.png",
+  "뒷면_연락망_그림": "images/sos_back.jpg"
+}

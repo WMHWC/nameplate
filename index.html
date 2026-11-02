@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>완도군 명찰 만들기</title>
+<style>
+@font-face{font-family:"WandoCleansea";font-weight:400;src:url(fonts/cleanseaR.woff2) format("woff2")}
+@font-face{font-family:"WandoCleansea";font-weight:700;src:url(fonts/cleanseaB.woff2) format("woff2")}
+:root{--bg:#e9edf1;--panel:#fff;--ink:#1d2733;--muted:#5d6b7a;--line:#d3dae2;--accent:#1f5fa8;--soft:#f4f7fa;
+--ui:"Malgun Gothic","맑은 고딕","Apple SD Gothic Neo",sans-serif;--card:"WandoCleansea","Malgun Gothic",sans-serif}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ui)}
+.wrap{display:grid;grid-template-columns:350px 1fr;gap:24px;padding:24px max(16px,env(safe-area-inset-left,0px));align-items:start}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:20px}
+h1{font-size:20px;margin:0}
+.lab{font-weight:700;font-size:15px;display:block;margin-bottom:8px}
+.row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
+.row .lab{margin:0}
+.hint{color:var(--muted);font-size:13px;margin-top:6px;line-height:1.5}
+textarea,input[type=text],input[type=tel]{width:100%;font:inherit;font-size:16px;border:1px solid var(--line);border-radius:8px;padding:10px}
+textarea{height:110px;resize:vertical;line-height:1.6}
+textarea:focus,input:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.seg button{font:inherit;font-weight:700;font-size:14px;padding:7px 0;border:2px solid var(--line);background:#fff;border-radius:8px;cursor:pointer;color:var(--ink)}
+.seg button[aria-pressed=true]{border-color:var(--accent);background:#e6eef8}
+.weight{width:160px}
+.weight button{font-family:var(--card);font-size:13px;padding:5px 0}
+.weight button[data-v="400"]{font-weight:400}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tile{border:2px solid var(--line);border-radius:8px;background:#fff;padding:0;cursor:pointer;overflow:hidden;font:inherit;color:var(--ink)}
+.tile .th{display:block;width:100%;aspect-ratio:108/93;object-fit:cover;background:#fff}
+.tile .nm{display:block;font-size:13px;font-weight:700;padding:5px 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile[aria-pressed=true]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+.tile .none{display:grid;place-items:center;aspect-ratio:108/93;color:var(--muted);font-size:13px;background:repeating-linear-gradient(45deg,#fff 0 6px,#f1f3f6 6px 12px)}
+.print{font:inherit;font-weight:700;font-size:18px;padding:14px;border:0;border-radius:8px;background:var(--accent);color:#fff;cursor:pointer}
+.print:hover{filter:brightness(1.1)}
+.count{font-size:14px;color:var(--muted);margin-top:6px}
+.count b{color:var(--ink)}
+.box{background:var(--soft);border-radius:8px;padding:12px 14px;font-size:13.5px;line-height:1.7;color:var(--muted)}
+.box b{color:var(--ink)}
+.box ol{margin:4px 0 0;padding-left:20px}
+.switch{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:700;cursor:pointer}
+.switch input{width:20px;height:20px;flex:none}
+.contacts{display:grid;grid-template-columns:20px 1fr 1.45fr 30px;gap:6px;align-items:center;margin-top:10px}
+.contacts .h{font-size:12.5px;color:var(--muted);text-align:center}
+.contacts input{padding:7px 8px;font-size:15px}
+.contacts .x{width:30px;height:34px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#b23b3b;font-size:15px;cursor:pointer}
+.contacts .x:disabled{opacity:.3;cursor:default}
+.addrow{font:inherit;font-weight:700;font-size:14px;margin-top:8px;padding:8px;border:1.5px dashed var(--accent);border-radius:8px;background:#fff;color:var(--accent);cursor:pointer;width:100%}
+.sheets{display:flex;flex-wrap:wrap;gap:20px;zoom:.55}
+.sheet{width:210mm;height:297mm;background:#fff;position:relative;box-shadow:0 2px 10px rgba(0,0,0,.15);overflow:hidden;flex:none}
+
+/* 명패: 처음 받은 Word 파일과 같은 크기. 바깥 11×14cm, 선 0.79mm.
+   자르기 편하게 종이 오른쪽 위 끝에 붙임 (가로 100~210mm)
+   안쪽 기준(mm): 위 칸 0~25.99 | 선 | 그림 칸 26.78~119.41 | 선 | 아래 칸 120.2~138.42 */
+.card{position:absolute;left:100mm;width:110mm;height:140mm;border:.79mm solid #000;font-family:var(--card);color:#000;background:#fff}
+.card.c1{top:0}.card.c2{top:140mm}
+.card>*{position:absolute;left:0;right:0}
+.head{top:0;height:25.99mm;display:flex;align-items:center;justify-content:space-between;padding:0 2.8mm}
+.head img{display:block;flex:none;object-fit:contain}
+.logo{width:21.64mm;height:21.64mm;object-position:left center}
+.slogan{width:53.85mm;height:17.82mm;object-position:right center}
+.ln{height:.79mm;background:#000}
+.ln.a{top:25.99mm}.ln.b{top:119.41mm}
+.bgbox{top:26.78mm;height:92.63mm;overflow:hidden}
+.bgbox img{width:100%;height:100%;display:block;object-fit:cover}
+.name{top:26.78mm;height:92.63mm;display:flex;align-items:center;justify-content:center;white-space:nowrap}
+.name .t{display:flex;line-height:1;transform:translateY(-.027em)}
+.foot{top:120.2mm;height:18.22mm;display:flex;align-items:center;justify-content:center;gap:2.5mm;padding:0 3mm}
+.foot img{width:19.91mm;height:15.36mm;display:block;flex:none;object-fit:contain}
+.foot .t{line-height:1;white-space:pre;transform:translateY(-.027em);letter-spacing:-.06em}
+
+/* 뒷면 비상연락망: 원본 그림(1299×1653px) 위에 표를 새로 그림 */
+.card.back{border:.25mm solid #9aa3ad}
+.card.back.flip{transform:rotate(180deg)}
+.back .sos{position:absolute;inset:0;width:100%;height:100%;display:block}
+.tbl{position:absolute;border-collapse:collapse;table-layout:fixed;font-family:var(--card);border:.26mm solid #111}
+.tbl td,.tbl th{border:.2mm solid #444;text-align:center;vertical-align:middle;padding:0;white-space:nowrap;overflow:hidden;line-height:1}
+.tbl th{background:#ffe9c2;color:#c94545;font-weight:700;font-size:10pt;letter-spacing:.6em;text-indent:.6em}
+.tbl .no{color:#ed5e5e;font-size:9.5pt;font-weight:700}
+.tbl .nm span{display:inline-flex}
+.tbl .ph{font-size:14.5pt;letter-spacing:.02em}
+
+/* 비밀번호 창 */
+.gate{position:fixed;inset:0;z-index:50;background:var(--bg);display:grid;place-items:center;padding:16px}
+.gate .gform{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:28px 24px;width:min(340px,100%);display:flex;flex-direction:column;gap:14px;text-align:center}
+.gate h2{margin:0;font-size:20px}
+.gate input{text-align:center;font-size:26px;letter-spacing:.4em;padding:12px}
+.gate input:disabled,.gate button:disabled{opacity:.5;cursor:not-allowed}
+.gate button{font:inherit;font-weight:700;font-size:17px;padding:12px;border:0;border-radius:8px;background:var(--accent);color:#fff;cursor:pointer}
+.gate .err{color:#c0392b;font-size:14px;min-height:1.2em;margin:0}
+@media print{.gate{display:none!important}}
+@media (max-width:780px){.wrap{grid-template-columns:1fr}.sheets{zoom:.4}}
+@page{size:A4;margin:0}
+@media print{
+ body{background:#fff}.panel{display:none}.wrap{display:block;padding:0}
+ .sheets{zoom:1;display:block;gap:0}.sheet{box-shadow:none;break-after:page;page-break-after:always}
+ .sheet:last-child{break-after:auto;page-break-after:auto}
+ *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style></head><body>
+<div class="gate" id="gate"><div class="gform" id="gateForm">
+ <h2>명찰 만들기</h2><label for="pw" style="font-size:14px;color:var(--muted)">비밀번호를 입력해주세요</label>
+ <input type="password" id="pw" inputmode="numeric" maxlength="12" autofocus>
+ <p class="err" id="pwErr"></p><button type="button" id="pwBtn">들어가기</button></div></div>
+<div class="wrap" id="app" hidden>
+<section class="panel">
+ <h1>명찰 만들기</h1>
+
+ <div>
+  <div class="row"><label class="lab" for="names">① 이름</label>
+   <div class="seg weight" id="nameW"><button data-v="700">Bold</button><button data-v="400">Regular</button></div></div>
+  <textarea id="names" spellcheck="false">김승호, 김종구, 김환, 남궁민수</textarea>
+  <div class="hint">쉼표(,)나 줄바꿈으로 나눠요.</div>
+  <div class="count" id="count"></div>
+ </div>
+
+ <div><span class="lab">② 배경 그림</span><div class="tiles" id="tiles"></div></div>
+
+ <div>
+  <div class="row"><label class="lab" for="foot">③ 아래 글씨</label>
+   <div class="seg weight" id="footW"><button data-v="700">Bold</button><button data-v="400">Regular</button></div></div>
+  <input type="text" id="foot" value="완도군 정신건강 복지센터">
+ </div>
+
+ <div>
+  <span class="lab">④ 뒷면 비상연락망</span>
+  <label class="switch"><input type="checkbox" id="backOn"> 뒷면에 비상연락망 넣기 (접어서 쓰기)</label>
+  <div id="backBox" hidden>
+   <div class="hint">켜면 <b>A4 한 장에 1명</b>씩 나와요. 위는 이름, 아래는 연락망이에요. 바깥 선을 따라 자르고 가운데 선에서 반으로 접어 꽂아요.</div>
+   <div class="contacts" id="contacts"></div>
+   <button class="addrow" id="addrow">＋ 연락처 추가</button>
+   <label class="switch" style="margin-top:10px;font-weight:400;font-size:13.5px"><input type="checkbox" id="flipOn"> 연락망 거꾸로 인쇄 (접은 뒤 옆으로 뒤집으면 바로 보임)</label>
+  </div>
+ </div>
+
+ <button class="print" id="print">인쇄하기</button>
+
+ <div class="box"><b>인쇄할 때 이렇게 맞춰주세요</b>
+  <ol><li>용지: <b>A4</b></li><li>여백: <b>없음</b></li><li>배율: <b>100%</b> (또는 기본값/실제 크기)</li><li>더보기 → <b>배경 그래픽</b> 체크</li></ol>
+  명찰은 종이 <b>오른쪽 위 끝</b>에 붙어서 나와요. 왼쪽과 아래만 자르면 돼요.<br>네모 크기: 가로 11cm × 세로 14cm</div>
+</section>
+<main class="sheets" id="sheets"></main>
+</div>
+<script>
+// 비밀번호 (매번 입력). 숫자를 그대로 적지 않고 계산값으로 비교해요.
+const PW_SUM=2085881774;
+function h(s){let x=5381;for(const c of s)x=((x*33)^c.charCodeAt(0))>>>0;return x}
+// 5번 틀리면 10분 동안 못 들어감
+let lock={f:0,u:0};try{lock=JSON.parse(localStorage.getItem('mc_lock'))||lock}catch(e){}
+function saveLock(){try{localStorage.setItem('mc_lock',JSON.stringify(lock))}catch(e){}}
+const pwEl=document.getElementById('pw'),pwErr=document.getElementById('pwErr'),pwBtn=document.getElementById('pwBtn');
+function lockTick(){const left=lock.u-Date.now();
+  if(left>0){pwEl.disabled=pwBtn.disabled=true;const m=Math.floor(left/60000),s=Math.ceil(left%60000/1000);
+    pwErr.textContent=`5번 틀려서 잠겼어요. ${m}분 ${String(s===60?0:s).padStart(2,'0')}초 뒤에 다시 해주세요.`;setTimeout(lockTick,1000)}
+  else if(pwEl.disabled){pwEl.disabled=pwBtn.disabled=false;pwErr.textContent='';pwEl.focus()}}
+function tryPw(){if(lock.u>Date.now())return;const v=pwEl.value.trim();
+  if(h(v)===PW_SUM){lock={f:0,u:0};saveLock();document.getElementById('gate').remove();document.getElementById('app').hidden=false;render();return}
+  lock.f++;pwEl.value='';
+  if(lock.f>=5){lock={f:0,u:Date.now()+10*60*1000};saveLock();lockTick();return}
+  saveLock();pwErr.textContent=`비밀번호가 달라요. (${lock.f}/5번 틀림, 5번 틀리면 10분 잠김)`;pwEl.focus()}
+pwBtn.addEventListener('click',tryPw);
+pwEl.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();tryPw()}});
+lockTick();
+/* ── 그림 설정 ──
+   인터넷 주소로 쓸 때는 같은 폴더의 config.json 이 있으면 그걸 먼저 읽어요.
+   그래서 config.json 과 images 폴더만 바꾸면 멀리서도 그림이 바뀌어요. */
+let CFG={"배경": [{"이름": "봄", "파일": "images/spring.jpg"}, {"이름": "여름", "파일": "images/summer.jpg"}, {"이름": "가을", "파일": "images/autumn.jpg"}, {"이름": "겨울", "파일": "images/winter.jpg"}], "위쪽_로고": "images/logo_top.png", "위쪽_문구": "images/slogan.png", "아래쪽_로고": "images/logo_bottom.png", "뒷면_연락망_그림": "images/sos_back.jpg"};
+const $=id=>document.getElementById(id);
+const st={bg:'',nw:'700',fw:'700'};
+let contacts=[{n:'',p:''}],backOn=false,flipOn=true;
+function get(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function put(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+if(get('mp5_names')!==null)$('names').value=get('mp5_names');
+if(get('mp5_foot')!==null)$('foot').value=get('mp5_foot');
+for(const k of ['bg','nw','fw']){const v=get('mp5_'+k);if(v)st[k]=v}
+try{const c=JSON.parse(get('mp5_contacts')||'null');if(Array.isArray(c)&&c.length>=1&&c.length<=5)contacts=c}catch(e){}
+backOn=get('mp5_backOn')==='1';flipOn=get('mp5_flipOn')!=='0';
+
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const NAME_PT=98.5, NAME_MAX_MM=100, FOOT_PT=20;
+function parse(){return $('names').value.split(/[,，、\n]+/).map(t=>t.trim()).filter(Boolean)
+  .map(t=>/^[가-힣\s]+$/.test(t)?t.replace(/\s+/g,''):t)}
+function nameHTML(n,tight){
+  n=String(n).trim(); if(/^[가-힣\s]+$/.test(n))n=n.replace(/\s+/g,'');
+  if(/^[가-힣]+$/.test(n)){const ch=[...n];
+    const gap=ch.length===2?'.5em':(tight||'-.054em');   // 외자(두 글자)는 가운데를 띄움
+    return ch.map((c,i)=>`<span style="margin-left:${i?gap:0}">${c}</span>`).join('')}
+  return `<span>${esc(n)}</span>`}
+function phone(v){ // 숫자만 남기고 하이픈 자동
+  const d=v.replace(/\D/g,'').slice(0,11);
+  if(d.startsWith('02')){if(d.length<=2)return d;if(d.length<=5)return d.slice(0,2)+'-'+d.slice(2);
+    if(d.length<=9)return d.slice(0,2)+'-'+d.slice(2,d.length-4)+'-'+d.slice(-4);return d.slice(0,2)+'-'+d.slice(2,6)+'-'+d.slice(6,10)}
+  if(/^1[5-9]/.test(d)&&d.length<=8)return d.length<=4?d:d.slice(0,4)+'-'+d.slice(4);
+  if(d.length<=3)return d;if(d.length<=6)return d.slice(0,3)+'-'+d.slice(3);
+  if(d.length<=10)return d.slice(0,3)+'-'+d.slice(3,d.length-4)+'-'+d.slice(-4);
+  return d.slice(0,3)+'-'+d.slice(3,7)+'-'+d.slice(7)}
+function curBg(){const b=CFG.배경.find(b=>b.이름===st.bg);return st.bg==='없음'||!b?null:b}
+function card(n,cls,bg){return `<div class="card ${cls}">
+<div class="head"><img class="logo" src="${CFG.위쪽_로고}" alt=""><img class="slogan" src="${CFG.위쪽_문구}" alt=""></div>
+<div class="ln a"></div>
+<div class="bgbox">${bg?`<img src="${bg.파일}" alt="" style="object-position:${bg.위치||'50% 50%'}">`:''}</div>
+<div class="ln b"></div>
+<div class="name"><div class="t" style="font-weight:${st.nw}">${nameHTML(n)}</div></div>
+<div class="foot"><img src="${CFG.아래쪽_로고}" alt=""><div class="t" style="font-weight:${st.fw}">${esc($('foot').value)}</div></div></div>`}
+// 연락망 표 자리 (원본 그림 px). 칸 높이는 원본과 같고, 사람 수가 줄면 위아래 가운데로 모아요
+const SW=1299,SH=1653,MM=140/SH,TL=209,TW=880,HEAD=100,ROW=116,AREA_T=590,AREA_H=678;
+function back(){
+  const rows=contacts.filter((c,i)=>i<5), h=HEAD+ROW*rows.length, top=AREA_T+(AREA_H-h)/2;
+  let t=`<table class="tbl" style="left:${TL*MM}mm;top:${top*MM}mm;width:${TW*MM}mm">
+<colgroup><col style="width:${80*MM}mm"><col style="width:${248*MM}mm"><col></colgroup>
+<tr style="height:${HEAD*MM}mm"><th></th><th>이름</th><th>연락처</th></tr>`;
+  rows.forEach((c,i)=>{t+=`<tr style="height:${ROW*MM}mm"><td class="no">${i+1}</td><td class="nm" style="font-weight:700"><span>${nameHTML(c.n,'.02em')}</span></td><td class="ph">${esc(c.p)}</td></tr>`});
+  return `<div class="card c2 back${flipOn?' flip':''}"><img class="sos" src="${CFG.뒷면_연락망_그림}" alt="">${t}</table></div>`}
+function fit(){
+  document.querySelectorAll('.card').forEach(c=>{
+    const k=c.getBoundingClientRect().width/110;  // 화면 px ÷ mm
+    if(c.classList.contains('back')){c.querySelectorAll('.nm').forEach(td=>{const s=td.querySelector('span');td.style.fontSize='13pt';
+      const r=td.getBoundingClientRect().width*.86,w=s.getBoundingClientRect().width;if(w>r)td.style.fontSize=(13*r/w)+'pt'});return}
+    const t=c.querySelector('.name .t');t.style.fontSize=NAME_PT+'pt';
+    const w=t.getBoundingClientRect().width/k; if(w>NAME_MAX_MM)t.style.fontSize=(NAME_PT*NAME_MAX_MM/w)+'pt';
+    const ft=c.querySelector('.foot .t');ft.style.fontSize=FOOT_PT+'pt';
+    const room=(108.42-6-2.5-19.91)*k, fw=ft.getBoundingClientRect().width;
+    if(fw>room)ft.style.fontSize=(FOOT_PT*room/fw)+'pt';
+  })}
+function tiles(){
+  if(st.bg!=='없음'&&!CFG.배경.some(b=>b.이름===st.bg))st.bg=CFG.배경[0]?CFG.배경[0].이름:'없음';
+  $('tiles').innerHTML=CFG.배경.map(b=>`<button class="tile" data-id="${esc(b.이름)}" aria-pressed="${st.bg===b.이름}"><img class="th" src="${b.파일}" alt="" style="object-position:${b.위치||'50% 50%'}"><span class="nm">${esc(b.이름)}</span></button>`).join('')
+   +`<button class="tile" data-id="없음" aria-pressed="${st.bg==='없음'}"><span class="none">그림 없음</span><span class="nm">배경 없애기</span></button>`}
+function contactsUI(){
+  const f=document.activeElement&&document.activeElement.id;
+  $('contacts').innerHTML='<span></span><span class="h">이름</span><span class="h">연락처</span><span></span>'+contacts.map((c,i)=>
+   `<span class="h">${i+1}</span><input type="text" id="cn${i}" data-i="${i}" data-k="n" value="${esc(c.n)}" aria-label="${i+1}번 이름"><input type="tel" id="cp${i}" data-i="${i}" data-k="p" value="${esc(c.p)}" placeholder="01000000000" aria-label="${i+1}번 연락처"><button class="x" data-del="${i}" title="이 줄 지우기" aria-label="${i+1}번 지우기" ${contacts.length<=1?'disabled':''}>✕</button>`).join('');
+  $('addrow').hidden=contacts.length>=5;
+  if(f&&$(f))$(f).focus()}
+function render(){
+  tiles();
+  const names=parse(),bg=curBg();let h='';
+  if(backOn){const b=back();for(const n of names)h+=`<div class="sheet">${card(n,'c1',bg)}${b}</div>`}
+  else for(let i=0;i<names.length;i+=2)h+=`<div class="sheet">${card(names[i],'c1',bg)}${names[i+1]!==undefined?card(names[i+1],'c2',bg):''}</div>`;
+  $('sheets').innerHTML=h||'<p style="zoom:1.8;color:var(--muted)">왼쪽에 이름을 입력하면 여기에 나와요.</p>';
+  $('count').innerHTML=`<b>${names.length}명</b> → A4 <b>${backOn?names.length:Math.ceil(names.length/2)}장</b>`;
+  for(const [id,key] of [['nameW','nw'],['footW','fw']])
+    $(id).querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===st[key]));
+  $('backOn').checked=backOn;$('flipOn').checked=flipOn;$('backBox').hidden=!backOn;
+  fit(); if(document.fonts)document.fonts.ready.then(fit);
+  put('mp5_names',$('names').value);put('mp5_foot',$('foot').value);for(const k in st)put('mp5_'+k,st[k]);
+  put('mp5_backOn',backOn?'1':'0');put('mp5_flipOn',flipOn?'1':'0');put('mp5_contacts',JSON.stringify(contacts));
+}
+$('names').addEventListener('input',render);$('foot').addEventListener('input',render);
+for(const [id,key] of [['nameW','nw'],['footW','fw']])
+  $(id).addEventListener('click',e=>{const b=e.target.closest('button');if(b){st[key]=b.dataset.v;render()}});
+$('tiles').addEventListener('click',e=>{const t=e.target.closest('.tile');if(t){st.bg=t.dataset.id;render()}});
+$('contacts').addEventListener('input',e=>{const x=e.target;if(x.dataset.i===undefined)return;
+  if(x.dataset.k==='p'){x.value=phone(x.value)}contacts[+x.dataset.i][x.dataset.k]=x.value;render()});
+$('contacts').addEventListener('click',e=>{const d=e.target.closest('[data-del]');if(!d||contacts.length<=1)return;
+  contacts.splice(+d.dataset.del,1);contactsUI();render()});
+$('addrow').addEventListener('click',()=>{if(contacts.length<5){contacts.push({n:'',p:''});contactsUI();render();$('cn'+(contacts.length-1)).focus()}});
+$('backOn').addEventListener('change',e=>{backOn=e.target.checked;render()});
+$('flipOn').addEventListener('change',e=>{flipOn=e.target.checked;render()});
+$('print').addEventListener('click',()=>window.print());
+window.addEventListener('beforeprint',fit);
+contacts.forEach(c=>c.p=phone(c.p||''));
+contactsUI();render();
+// 인터넷 주소로 열었을 때: config.json 을 읽어 그림을 최신으로 바꿈
+if(location.protocol.startsWith('http'))fetch('config.json?v='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(c=>{
+  if(!c)return;const base=new URL('.',location.href);const abs=p=>new URL(p,base).href;
+  CFG={...CFG,...c};CFG.배경=(c.배경||CFG.배경).map(b=>({...b,파일:abs(b.파일)}));
+  for(const k of ['위쪽_로고','위쪽_문구','아래쪽_로고','뒷면_연락망_그림'])if(c[k])CFG[k]=abs(c[k]);render()}).catch(()=>{});
+</script></body></html>
