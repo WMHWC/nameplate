@@ -109,6 +109,12 @@ textarea:focus,input:focus,button:focus-visible{outline:2px solid var(--accent);
 .modal .btns{display:flex;gap:8px;margin:14px 22px 0}
 .modal .btns .close{margin:0;flex:2;width:auto}
 .modal .ghost{flex:1;font:inherit;font-weight:700;font-size:15px;padding:10px;border:1.5px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);cursor:pointer}
+/* 커스텀 배경 */
+.tile.cust .none{background:linear-gradient(135deg,#fff4e6,#ffe3e3);color:#c2410c;font-weight:700;line-height:1.5;text-align:center}
+.tbar{grid-column:1/-1;display:flex;align-items:center;gap:10px}
+.tback{font:inherit;font-weight:700;font-size:13px;padding:6px 10px;border:1.5px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);cursor:pointer}
+.soon{grid-column:1/-1;padding:22px 12px;border:2px dashed var(--line);border-radius:10px;text-align:center;font-size:15px;line-height:1.7;color:var(--ink);background:var(--soft)}
+.soon small{color:var(--muted);font-size:12.5px}
 /* 새 버전 알림 */
 .newbar{position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:center;gap:12px;padding:10px 16px;background:#2b8a3e;color:#fff;font-weight:700;font-size:15px;box-shadow:0 2px 10px rgba(0,0,0,.2)}
 .newbar button{font:inherit;font-weight:700;font-size:14px;padding:6px 14px;border:0;border-radius:8px;background:#fff;color:#2b8a3e;cursor:pointer}
@@ -267,7 +273,7 @@ lockTick();
 /* ── 그림 설정 ──
    인터넷 주소로 쓸 때는 같은 폴더의 config.json 이 있으면 그걸 먼저 읽어요.
    그래서 config.json 과 images 폴더만 바꾸면 멀리서도 그림이 바뀌어요. */
-let CFG={"배경": [{"이름": "봄", "파일": "images/spring.jpg"}, {"이름": "여름", "파일": "images/summer.jpg"}, {"이름": "가을", "파일": "images/autumn.jpg"}, {"이름": "겨울", "파일": "images/winter.jpg"}], "위쪽_로고": "images/logo_top.png", "위쪽_문구": "images/slogan.png", "아래쪽_로고": "images/logo_bottom.png", "뒷면_연락망_그림": "images/sos_back_blank.jpg", "업데이트": [{"버전": "2.1", "날짜": "2026-11-02", "내용": "'전부 한눈에'와 '기본 크기'를 버튼 하나로 왔다 갔다 할 수 있어요."}, {"버전": "2.0", "날짜": "2026-11-02", "내용": "새 화면으로 바뀌었어요. 설정 칸 오른쪽 · ①~④ 단계 버튼 · 미리보기 크기 조절 · 인쇄 화면만 보기. '⟳ 새로고침' 버튼으로 항상 최신으로 바꿀 수 있고, 새 버전이 나오면 위에 초록색 알림이 떠요."}, {"버전": "1.9", "날짜": "2026-11-02", "내용": "미리보기 위에 크기 조절 막대가 생겼어요. ＋/－로 크게·작게, '기본 크기', '전부 한눈에'로 바로 바꿀 수 있어요."}, {"버전": "1.8", "날짜": "2026-11-02", "내용": "'🖨 인쇄 화면만' 버튼으로 설정 칸을 숨기고 인쇄될 종이만 크게 볼 수 있어요. 오른쪽 위 '⚙ 설정 열기'로 돌아와요."}, {"버전": "1.7", "날짜": "2026-11-02", "내용": "설정 칸을 오른쪽으로 옮기고 넓혔어요. 미리보기는 A4 한 장이 화면에 딱 맞게 보이고, 장마다 '1 / 3장'처럼 페이지가 표시돼요."}, {"버전": "1.6", "날짜": "2026-11-02", "내용": "이름 칸 설명을 칸 안으로 옮기고, 아래 'O명 → A4 O장' 글씨를 없앴어요."}, {"버전": "1.5", "날짜": "2026-11-02", "내용": "①~④ 단계를 위쪽 버튼으로 골라요. 새로고침하면 항상 ① 이름부터 시작해요. (입력한 내용은 그대로 남아요)"}, {"버전": "1.4", "날짜": "2026-11-02", "내용": "화면과 비상연락망 제목까지 모든 글씨를 완도 청정바다체로 바꿨어요."}, {"버전": "1.3", "날짜": "2026-11-02", "내용": "'정보' 버튼이 생겼어요. 명찰에 쓰는 글씨체와 그림·로고를 볼 수 있어요."}, {"버전": "1.2", "날짜": "2026-11-02", "내용": "①~④ 단계를 눌러서 펴고 접을 수 있어요. 인쇄하기를 누르면 인쇄 설정을 먼저 알려줘요."}, {"버전": "1.1", "날짜": "2026-11-02", "내용": "글씨 굵기 버튼을 '굵게 / 보통'으로 바꿨어요. 비상연락망 긴 설명을 없애고, 연락처는 최대 5명까지라고 알려줘요."}, {"버전": "1.0", "날짜": "2026-11-02", "내용": "비상연락망 위쪽 제목을 직접 바꿀 수 있어요. (기본: 마음건강팀) 비워두면 '비상 연락망'만 나와요."}], "정보": {"글씨체": [{"이름": "완도 청정바다체 (보통·굵게)", "쓰는 곳": "화면과 명찰의 모든 글씨", "출처": "저작권 완도군 · 디자인 윤디자인", "글꼴": "WandoCleansea"}], "그림": [{"이름": "위쪽 로고", "쓰는 곳": "명찰 왼쪽 위", "파일": "images/logo_top.png"}, {"이름": "위쪽 문구", "쓰는 곳": "명찰 오른쪽 위 ('참여자치 실현! 함께 여는 새로운 완도')", "파일": "images/slogan.png"}, {"이름": "아래쪽 로고", "쓰는 곳": "명찰 아래 칸", "파일": "images/logo_bottom.png"}, {"이름": "배경 그림 (봄·여름·가을·겨울)", "쓰는 곳": "명찰 가운데", "파일": "images/spring.jpg"}, {"이름": "비상연락망 그림", "쓰는 곳": "뒷면 비상연락망", "파일": "images/sos_back_blank.jpg"}]}};
+let CFG={"배경": [{"이름": "봄", "파일": "images/spring.jpg"}, {"이름": "여름", "파일": "images/summer.jpg"}, {"이름": "가을", "파일": "images/autumn.jpg"}, {"이름": "겨울", "파일": "images/winter.jpg"}], "커스텀_배경": [], "위쪽_로고": "images/logo_top.png", "위쪽_문구": "images/slogan.png", "아래쪽_로고": "images/logo_bottom.png", "뒷면_연락망_그림": "images/sos_back_blank.jpg", "업데이트": [{"버전": "2.2", "날짜": "2026-11-02", "내용": "② 배경에 '커스텀' 칸이 생겼어요. 행사·장소에 맞춘 배경(예: 딸기농장)을 이름 붙여서 따로 모아둘 거예요. (지금은 업데이트 예정)"}, {"버전": "2.1", "날짜": "2026-11-02", "내용": "'전부 한눈에'와 '기본 크기'를 버튼 하나로 왔다 갔다 할 수 있어요."}, {"버전": "2.0", "날짜": "2026-11-02", "내용": "새 화면으로 바뀌었어요. 설정 칸 오른쪽 · ①~④ 단계 버튼 · 미리보기 크기 조절 · 인쇄 화면만 보기. '⟳ 새로고침' 버튼으로 항상 최신으로 바꿀 수 있고, 새 버전이 나오면 위에 초록색 알림이 떠요."}, {"버전": "1.9", "날짜": "2026-11-02", "내용": "미리보기 위에 크기 조절 막대가 생겼어요. ＋/－로 크게·작게, '기본 크기', '전부 한눈에'로 바로 바꿀 수 있어요."}, {"버전": "1.8", "날짜": "2026-11-02", "내용": "'🖨 인쇄 화면만' 버튼으로 설정 칸을 숨기고 인쇄될 종이만 크게 볼 수 있어요. 오른쪽 위 '⚙ 설정 열기'로 돌아와요."}, {"버전": "1.7", "날짜": "2026-11-02", "내용": "설정 칸을 오른쪽으로 옮기고 넓혔어요. 미리보기는 A4 한 장이 화면에 딱 맞게 보이고, 장마다 '1 / 3장'처럼 페이지가 표시돼요."}, {"버전": "1.6", "날짜": "2026-11-02", "내용": "이름 칸 설명을 칸 안으로 옮기고, 아래 'O명 → A4 O장' 글씨를 없앴어요."}, {"버전": "1.5", "날짜": "2026-11-02", "내용": "①~④ 단계를 위쪽 버튼으로 골라요. 새로고침하면 항상 ① 이름부터 시작해요. (입력한 내용은 그대로 남아요)"}, {"버전": "1.4", "날짜": "2026-11-02", "내용": "화면과 비상연락망 제목까지 모든 글씨를 완도 청정바다체로 바꿨어요."}, {"버전": "1.3", "날짜": "2026-11-02", "내용": "'정보' 버튼이 생겼어요. 명찰에 쓰는 글씨체와 그림·로고를 볼 수 있어요."}, {"버전": "1.2", "날짜": "2026-11-02", "내용": "①~④ 단계를 눌러서 펴고 접을 수 있어요. 인쇄하기를 누르면 인쇄 설정을 먼저 알려줘요."}, {"버전": "1.1", "날짜": "2026-11-02", "내용": "글씨 굵기 버튼을 '굵게 / 보통'으로 바꿨어요. 비상연락망 긴 설명을 없애고, 연락처는 최대 5명까지라고 알려줘요."}, {"버전": "1.0", "날짜": "2026-11-02", "내용": "비상연락망 위쪽 제목을 직접 바꿀 수 있어요. (기본: 마음건강팀) 비워두면 '비상 연락망'만 나와요."}], "정보": {"글씨체": [{"이름": "완도 청정바다체 (보통·굵게)", "쓰는 곳": "화면과 명찰의 모든 글씨", "출처": "저작권 완도군 · 디자인 윤디자인", "글꼴": "WandoCleansea"}], "그림": [{"이름": "위쪽 로고", "쓰는 곳": "명찰 왼쪽 위", "파일": "images/logo_top.png"}, {"이름": "위쪽 문구", "쓰는 곳": "명찰 오른쪽 위 ('참여자치 실현! 함께 여는 새로운 완도')", "파일": "images/slogan.png"}, {"이름": "아래쪽 로고", "쓰는 곳": "명찰 아래 칸", "파일": "images/logo_bottom.png"}, {"이름": "배경 그림 (봄·여름·가을·겨울)", "쓰는 곳": "명찰 가운데", "파일": "images/spring.jpg"}, {"이름": "비상연락망 그림", "쓰는 곳": "뒷면 비상연락망", "파일": "images/sos_back_blank.jpg"}]}};
 const $=id=>document.getElementById(id);
 // 지금 열린 화면의 버전 (index.html 안에 적힌 것). config.json 의 최신 버전과 다르면 "새 버전" 알림을 띄움
 const BUILD=((CFG.업데이트||[])[0]||{}).버전||'';
@@ -307,7 +313,10 @@ function phone(v){ // 숫자만 남기고 하이픈 자동
   if(d.length<=3)return d;if(d.length<=6)return d.slice(0,3)+'-'+d.slice(3);
   if(d.length<=10)return d.slice(0,3)+'-'+d.slice(3,d.length-4)+'-'+d.slice(-4);
   return d.slice(0,3)+'-'+d.slice(3,7)+'-'+d.slice(7)}
-function curBg(){const b=CFG.배경.find(b=>b.이름===st.bg);return st.bg==='없음'||!b?null:b}
+// 배경 = 기본(계절) + 커스텀(행사·장소용, 예: 딸기농장). 커스텀은 config.json 의 "커스텀_배경"에 이름과 함께 추가
+const allBg=()=>[...(CFG.배경||[]),...(CFG.커스텀_배경||[])];
+function curBg(){const b=allBg().find(b=>b.이름===st.bg);return st.bg==='없음'||!b?null:b}
+let customView=null;   // null이면 지금 고른 배경에 맞춰 자동
 function card(n,cls,bg){return `<div class="card ${cls}">
 <div class="head"><img class="logo" src="${CFG.위쪽_로고}" alt=""><img class="slogan" src="${CFG.위쪽_문구}" alt=""></div>
 <div class="ln a"></div>
@@ -348,9 +357,16 @@ function fit(){
     if(fw>room)ft.style.fontSize=(FOOT_PT*room/fw)+'pt';
   })}
 function tiles(){
-  if(st.bg!=='없음'&&!CFG.배경.some(b=>b.이름===st.bg))st.bg=CFG.배경[0]?CFG.배경[0].이름:'없음';
-  $('tiles').innerHTML=CFG.배경.map(b=>`<button class="tile" data-id="${esc(b.이름)}" aria-pressed="${st.bg===b.이름}"><img class="th" src="${b.파일}" alt="" style="object-position:${b.위치||'50% 50%'}"><span class="nm">${esc(b.이름)}</span></button>`).join('')
-   +`<button class="tile" data-id="없음" aria-pressed="${st.bg==='없음'}"><span class="none">그림 없음</span><span class="nm">배경 없애기</span></button>`}
+  if(st.bg!=='없음'&&!allBg().some(b=>b.이름===st.bg))st.bg=CFG.배경[0]?CFG.배경[0].이름:'없음';
+  const cust=CFG.커스텀_배경||[],inCust=customView===null?cust.some(b=>b.이름===st.bg):customView;
+  const tile=b=>`<button class="tile" data-id="${esc(b.이름)}" aria-pressed="${st.bg===b.이름}"><img class="th" src="${b.파일}" alt="" style="object-position:${b.위치||'50% 50%'}"><span class="nm">${esc(b.이름)}</span></button>`;
+  if(inCust){
+    $('tiles').innerHTML=`<div class="tbar"><button class="tback" data-id="__back" type="button">← 기본 배경</button><b>✨ 커스텀 배경</b></div>`
+     +(cust.length?cust.map(tile).join(''):`<div class="soon">🍓 커스텀 배경은 <b>업데이트 예정</b>이에요.<br><small>행사·장소에 맞춘 배경(예: 딸기농장)이 생기면 여기에 이름과 함께 나와요.</small></div>`);
+    return}
+  $('tiles').innerHTML=CFG.배경.map(tile).join('')
+   +`<button class="tile" data-id="없음" aria-pressed="${st.bg==='없음'}"><span class="none">그림 없음</span><span class="nm">배경 없애기</span></button>`
+   +`<button class="tile cust" data-id="__custom" aria-pressed="${cust.some(b=>b.이름===st.bg)}"><span class="none">✨<br>${cust.length?cust.length+'개':'준비 중'}</span><span class="nm">커스텀</span></button>`}
 function contactsUI(){
   const f=document.activeElement&&document.activeElement.id;
   $('contacts').innerHTML='<span></span><span class="h">이름</span><span class="h">연락처</span><span></span>'+contacts.map((c,i)=>
@@ -410,7 +426,9 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('updModal').hidde
 updUI();
 for(const [id,key] of [['nameW','nw'],['footW','fw']])
   $(id).addEventListener('click',e=>{const b=e.target.closest('button');if(b){st[key]=b.dataset.v;render()}});
-$('tiles').addEventListener('click',e=>{const t=e.target.closest('.tile');if(t){st.bg=t.dataset.id;render()}});
+$('tiles').addEventListener('click',e=>{const t=e.target.closest('[data-id]');if(!t)return;const id=t.dataset.id;
+  if(id==='__custom'){customView=true;render();return}if(id==='__back'){customView=false;render();return}
+  st.bg=id;render()});
 $('contacts').addEventListener('input',e=>{const x=e.target;if(x.dataset.i===undefined)return;
   if(x.dataset.k==='p'){x.value=phone(x.value)}contacts[+x.dataset.i][x.dataset.k]=x.value;render()});
 $('contacts').addEventListener('click',e=>{const d=e.target.closest('[data-del]');if(!d||contacts.length<=1)return;
@@ -456,6 +474,6 @@ if(location.protocol.startsWith('http'))fetch('config.json?v='+Date.now(),{cache
   if(!c)return;const base=new URL('.',location.href);
   // 그림 주소 뒤에 버전을 붙여서, 그림을 바꾸면 예전 그림(캐시) 대신 새 그림을 바로 받아요
   const v=encodeURIComponent(((c.업데이트||[])[0]||{}).버전||'');const abs=p=>{const u=new URL(p,base);if(v)u.searchParams.set('v',v);return u.href};
-  imgUrl=abs;CFG={...CFG,...c};CFG.배경=(c.배경||CFG.배경).map(b=>({...b,파일:abs(b.파일)}));
+  imgUrl=abs;CFG={...CFG,...c};CFG.배경=(c.배경||CFG.배경).map(b=>({...b,파일:abs(b.파일)}));CFG.커스텀_배경=(c.커스텀_배경||[]).map(b=>({...b,파일:abs(b.파일)}));
   for(const k of ['위쪽_로고','위쪽_문구','아래쪽_로고','뒷면_연락망_그림'])if(c[k])CFG[k]=abs(c[k]);updUI();render()}).catch(()=>{});
 </script></body></html>
