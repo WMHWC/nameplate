@@ -11,7 +11,7 @@
 [hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ui)}
 .wrap{display:grid;grid-template-columns:350px 1fr;gap:24px;padding:24px max(16px,env(safe-area-inset-left,0px));align-items:start}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:20px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:10px}
 h1{font-size:20px;margin:0}
 .lab{font-weight:700;font-size:15px;display:block;margin-bottom:8px}
 .row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
@@ -32,7 +32,7 @@ textarea:focus,input:focus,button:focus-visible{outline:2px solid var(--accent);
 .tile .nm{display:block;font-size:13px;font-weight:700;padding:5px 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tile[aria-pressed=true]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
 .tile .none{display:grid;place-items:center;aspect-ratio:108/93;color:var(--muted);font-size:13px;background:repeating-linear-gradient(45deg,#fff 0 6px,#f1f3f6 6px 12px)}
-.print{font:inherit;font-weight:700;font-size:18px;padding:14px;border:0;border-radius:8px;background:var(--accent);color:#fff;cursor:pointer}
+.print{margin-top:8px;font:inherit;font-weight:700;font-size:18px;padding:14px;border:0;border-radius:8px;background:var(--accent);color:#fff;cursor:pointer}
 .print:hover{filter:brightness(1.1)}
 .count{font-size:14px;color:var(--muted);margin-top:6px}
 .count b{color:var(--ink)}
@@ -84,8 +84,30 @@ textarea:focus,input:focus,button:focus-visible{outline:2px solid var(--accent);
 /* 연락망 제목 2줄 (원래 그림 글씨 자리에 그대로 겹쳐 그림) */
 .back .ttl{right:auto;font-family:"NSRound","Malgun Gothic",sans-serif;font-weight:800;color:#ed5f5e;white-space:pre;line-height:1.105;letter-spacing:.059em}
 
+/* 단계 접기·펴기 */
+.step{border:1px solid var(--line);border-radius:10px;background:#fff}
+.step>summary{list-style:none;display:flex;align-items:center;gap:8px;padding:13px 14px;cursor:pointer;font-weight:700;font-size:15px;border-radius:10px}
+.step>summary::-webkit-details-marker{display:none}
+.step>summary:hover{background:var(--soft)}
+.step .sum{margin-left:auto;font-weight:400;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:165px}
+.step .chev{flex:none;color:var(--muted);transition:transform .2s}
+.step[open] .chev{transform:rotate(180deg)}
+.step[open]>summary{border-bottom:1px solid var(--line);border-radius:10px 10px 0 0}
+.step .body{padding:12px 14px 14px}
+.mini{font-size:13px;color:var(--muted);font-weight:700}
+/* 인쇄 전 확인 창 */
+.modal .mhead.warn{background:linear-gradient(135deg,#d9480f,#f08c00)}
+.modal .chk{list-style:none;margin:0;padding:16px 22px 4px;display:grid;gap:8px}
+.modal .chk li::before{display:none}
+.modal .chk li,.modal .chk li:last-child{position:static;margin:0;border-left:0;display:flex;align-items:center;gap:10px;background:var(--soft);border-radius:8px;padding:10px 12px;font-size:15px}
+.modal .chk span{flex:none;width:52px;font-size:13px;font-weight:700;color:var(--muted)}
+.modal .chk small{color:var(--muted)}
+.modal .note{margin:10px 22px 0;font-size:13.5px;line-height:1.6;color:var(--muted)}
+.modal .btns{display:flex;gap:8px;margin:14px 22px 0}
+.modal .btns .close{margin:0;flex:2;width:auto}
+.modal .ghost{flex:1;font:inherit;font-weight:700;font-size:15px;padding:10px;border:1.5px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);cursor:pointer}
 /* 업데이트 내역 */
-.top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
 .upd{position:relative;font:inherit;font-size:13px;font-weight:700;padding:6px 10px;border:1.5px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);cursor:pointer}
 .upd .dot{position:absolute;top:-4px;right:-4px;width:11px;height:11px;border-radius:50%;background:#e03131;border:2px solid #fff}
 .modal{position:fixed;inset:0;z-index:40;background:rgba(20,30,40,.45);display:grid;place-items:center;padding:16px}
@@ -133,43 +155,55 @@ textarea:focus,input:focus,button:focus-visible{outline:2px solid var(--accent);
 <section class="panel">
  <div class="top"><h1>명찰 만들기</h1><button class="upd" id="updBtn" type="button">업데이트 <span id="updVer"></span><span class="dot" id="updDot" hidden></span></button></div>
 
- <div>
-  <div class="row"><label class="lab" for="names">① 이름</label>
-   <div class="seg weight" id="nameW"><button data-v="700">굵게</button><button data-v="400">보통</button></div></div>
-  <textarea id="names" spellcheck="false">김승호, 김종구, 김환, 남궁민수</textarea>
-  <div class="hint">쉼표(,)나 줄바꿈으로 나눠요.</div>
-  <div class="count" id="count"></div>
- </div>
-
- <div><span class="lab">② 배경 그림</span><div class="tiles" id="tiles"></div></div>
-
- <div>
-  <div class="row"><label class="lab" for="foot">③ 아래 글씨</label>
-   <div class="seg weight" id="footW"><button data-v="700">굵게</button><button data-v="400">보통</button></div></div>
-  <input type="text" id="foot" value="완도군 정신건강 복지센터">
- </div>
-
- <div>
-  <span class="lab">④ 뒷면 비상연락망</span>
-  <label class="switch"><input type="checkbox" id="backOn"> 뒷면에 비상연락망 넣기 (접어서 쓰기)</label>
-  <div id="backBox" hidden>
-   <label class="hint" for="team" style="display:block;margin-top:12px;color:var(--ink);font-weight:700;font-size:13.5px">연락망 제목 (비워두면 '비상 연락망'만 나와요)</label>
-   <input type="text" id="team" value="마음건강팀" style="margin-top:4px" placeholder="예: 마음건강팀">
-   <div class="contacts" id="contacts"></div>
-   <button class="addrow" id="addrow">＋ 연락처 추가</button>
-   <div class="full" id="full" hidden>⚠ 연락처는 <b>최대 5명</b>까지 넣을 수 있어요.</div>
-   <label class="switch" style="margin-top:10px;font-weight:400;font-size:13.5px"><input type="checkbox" id="flipOn"> 연락망 거꾸로 인쇄 (접은 뒤 옆으로 뒤집으면 바로 보임)</label>
+ <details class="step" id="s1">
+  <summary>① 이름<span class="sum" id="sum1"></span><span class="chev">▾</span></summary>
+  <div class="body">
+   <div class="row"><span class="mini">글씨 굵기</span>
+    <div class="seg weight" id="nameW"><button data-v="700">굵게</button><button data-v="400">보통</button></div></div>
+   <textarea id="names" spellcheck="false" aria-label="이름">김승호, 김종구, 김환, 남궁민수</textarea>
+   <div class="hint">쉼표(,)나 줄바꿈으로 나눠요.</div>
+   <div class="count" id="count"></div>
   </div>
- </div>
+ </details>
+
+ <details class="step" id="s2">
+  <summary>② 배경 그림<span class="sum" id="sum2"></span><span class="chev">▾</span></summary>
+  <div class="body"><div class="tiles" id="tiles"></div></div>
+ </details>
+
+ <details class="step" id="s3">
+  <summary>③ 아래 글씨<span class="sum" id="sum3"></span><span class="chev">▾</span></summary>
+  <div class="body">
+   <div class="row"><span class="mini">글씨 굵기</span>
+    <div class="seg weight" id="footW"><button data-v="700">굵게</button><button data-v="400">보통</button></div></div>
+   <input type="text" id="foot" value="완도군 정신건강 복지센터" aria-label="아래 글씨">
+  </div>
+ </details>
+
+ <details class="step" id="s4">
+  <summary>④ 뒷면 비상연락망<span class="sum" id="sum4"></span><span class="chev">▾</span></summary>
+  <div class="body">
+   <label class="switch"><input type="checkbox" id="backOn"> 뒷면에 비상연락망 넣기 (접어서 쓰기)</label>
+   <div id="backBox" hidden>
+    <label class="hint" for="team" style="display:block;margin-top:12px;color:var(--ink);font-weight:700;font-size:13.5px">연락망 제목 (비워두면 '비상 연락망'만 나와요)</label>
+    <input type="text" id="team" value="마음건강팀" style="margin-top:4px" placeholder="예: 마음건강팀">
+    <div class="contacts" id="contacts"></div>
+    <button class="addrow" id="addrow">＋ 연락처 추가</button>
+    <div class="full" id="full" hidden>⚠ 연락처는 <b>최대 5명</b>까지 넣을 수 있어요.</div>
+    <label class="switch" style="margin-top:10px;font-weight:400;font-size:13.5px"><input type="checkbox" id="flipOn"> 연락망 거꾸로 인쇄 (접은 뒤 옆으로 뒤집으면 바로 보임)</label>
+   </div>
+  </div>
+ </details>
 
  <button class="print" id="print">인쇄하기</button>
-
- <div class="box"><b>인쇄할 때 이렇게 맞춰주세요</b>
-  <ol><li>용지: <b>A4</b></li><li>여백: <b>없음</b></li><li>배율: <b>100%</b> (또는 기본값/실제 크기)</li><li>더보기 → <b>배경 그래픽</b> 체크</li></ol>
-  명찰은 종이 <b>오른쪽 위 끝</b>에 붙어서 나와요. 왼쪽과 아래만 자르면 돼요.<br>네모 크기: 가로 11cm × 세로 14cm</div>
 </section>
 <main class="sheets" id="sheets"></main>
 </div>
+<div class="modal" id="prModal" hidden><div class="mbox" role="dialog" aria-modal="true" aria-labelledby="prTitle">
+ <div class="mhead warn"><h2 id="prTitle">⚠ 인쇄 전에 꼭 확인!</h2><div class="cur">다음 화면(인쇄 창)에서 이렇게 맞춰주세요</div></div>
+ <ol class="chk"><li><span>용지</span><b>A4</b></li><li><span>여백</span><b>없음</b></li><li><span>배율</span><b>100%</b> <small>(또는 기본값 / 실제 크기)</small></li><li><span>더보기</span><b>배경 그래픽</b> 체크 ✔</li></ol>
+ <p class="note">명찰은 종이 <b>오른쪽 위 끝</b>에 붙어서 나와요. 왼쪽과 아래만 자르면 돼요. (가로 11cm × 세로 14cm)</p>
+ <div class="btns"><button class="ghost" id="prNo" type="button">취소</button><button class="close" id="prGo" type="button">확인했어요, 인쇄하기</button></div></div></div>
 <div class="modal" id="updModal" hidden><div class="mbox" role="dialog" aria-modal="true" aria-labelledby="updTitle">
  <div class="mhead"><h2 id="updTitle">업데이트 내역</h2><div class="cur" id="updCur"></div></div><ul id="updList"></ul>
  <button class="close" id="updClose" type="button">닫기</button></div></div>
@@ -196,7 +230,7 @@ lockTick();
 /* ── 그림 설정 ──
    인터넷 주소로 쓸 때는 같은 폴더의 config.json 이 있으면 그걸 먼저 읽어요.
    그래서 config.json 과 images 폴더만 바꾸면 멀리서도 그림이 바뀌어요. */
-let CFG={"배경": [{"이름": "봄", "파일": "images/spring.jpg"}, {"이름": "여름", "파일": "images/summer.jpg"}, {"이름": "가을", "파일": "images/autumn.jpg"}, {"이름": "겨울", "파일": "images/winter.jpg"}], "위쪽_로고": "images/logo_top.png", "위쪽_문구": "images/slogan.png", "아래쪽_로고": "images/logo_bottom.png", "뒷면_연락망_그림": "images/sos_back_blank.jpg", "업데이트": [{"버전": "1.1", "날짜": "2026-11-02", "내용": "글씨 굵기 버튼을 '굵게 / 보통'으로 바꿨어요. 비상연락망 긴 설명을 없애고, 연락처는 최대 5명까지라고 알려줘요."}, {"버전": "1.0", "날짜": "2026-11-02", "내용": "비상연락망 위쪽 제목을 직접 바꿀 수 있어요. (기본: 마음건강팀) 비워두면 '비상 연락망'만 나와요."}]};
+let CFG={"배경": [{"이름": "봄", "파일": "images/spring.jpg"}, {"이름": "여름", "파일": "images/summer.jpg"}, {"이름": "가을", "파일": "images/autumn.jpg"}, {"이름": "겨울", "파일": "images/winter.jpg"}], "위쪽_로고": "images/logo_top.png", "위쪽_문구": "images/slogan.png", "아래쪽_로고": "images/logo_bottom.png", "뒷면_연락망_그림": "images/sos_back_blank.jpg", "업데이트": [{"버전": "1.2", "날짜": "2026-11-02", "내용": "①~④ 단계를 눌러서 펴고 접을 수 있어요. 인쇄하기를 누르면 인쇄 설정을 먼저 알려줘요."}, {"버전": "1.1", "날짜": "2026-11-02", "내용": "글씨 굵기 버튼을 '굵게 / 보통'으로 바꿨어요. 비상연락망 긴 설명을 없애고, 연락처는 최대 5명까지라고 알려줘요."}, {"버전": "1.0", "날짜": "2026-11-02", "내용": "비상연락망 위쪽 제목을 직접 바꿀 수 있어요. (기본: 마음건강팀) 비워두면 '비상 연락망'만 나와요."}]};
 const $=id=>document.getElementById(id);
 const st={bg:'',nw:'700',fw:'700'};
 let contacts=[{n:'',p:''}],backOn=false,flipOn=true;
@@ -288,6 +322,12 @@ function render(){
   for(const [id,key] of [['nameW','nw'],['footW','fw']])
     $(id).querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===st[key]));
   $('backOn').checked=backOn;$('flipOn').checked=flipOn;$('backBox').hidden=!backOn;
+  // 접혀 있어도 지금 뭘 골랐는지 오른쪽에 짧게 보여줌
+  const bgNow=curBg(),wt=k=>st[k]==='700'?'굵게':'보통',filled=contacts.filter(c=>c.n.trim()||c.p.trim()).length;
+  $('sum1').textContent=`${names.length}명 · ${wt('nw')}`;
+  $('sum2').textContent=bgNow?bgNow.이름:'그림 없음';
+  $('sum3').textContent=$('foot').value.trim()||'(비어 있음)';
+  $('sum4').textContent=backOn?`켜짐 · 연락처 ${filled}명`:'꺼짐';
   fit(); if(document.fonts)document.fonts.ready.then(fit);
   put('mp5_names',$('names').value);put('mp5_foot',$('foot').value);put('mp5_team',$('team').value);for(const k in st)put('mp5_'+k,st[k]);
   put('mp5_backOn',backOn?'1':'0');put('mp5_flipOn',flipOn?'1':'0');put('mp5_contacts',JSON.stringify(contacts));
@@ -306,7 +346,7 @@ function updUI(){
 $('updBtn').addEventListener('click',()=>{$('updModal').hidden=false;put('mp5_updSeen',updKey());updUI();$('updClose').focus()});
 $('updClose').addEventListener('click',()=>{$('updModal').hidden=true;$('updBtn').focus()});
 $('updModal').addEventListener('click',e=>{if(e.target===$('updModal'))$('updModal').hidden=true});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('updModal').hidden)$('updModal').hidden=true});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('updModal').hidden=true;$('prModal').hidden=true}});
 updUI();
 for(const [id,key] of [['nameW','nw'],['footW','fw']])
   $(id).addEventListener('click',e=>{const b=e.target.closest('button');if(b){st[key]=b.dataset.v;render()}});
@@ -318,7 +358,14 @@ $('contacts').addEventListener('click',e=>{const d=e.target.closest('[data-del]'
 $('addrow').addEventListener('click',()=>{if(contacts.length<5){contacts.push({n:'',p:''});contactsUI();render();$('cn'+(contacts.length-1)).focus()}});
 $('backOn').addEventListener('change',e=>{backOn=e.target.checked;render()});
 $('flipOn').addEventListener('change',e=>{flipOn=e.target.checked;render()});
-$('print').addEventListener('click',()=>window.print());
+$('print').addEventListener('click',()=>{$('prModal').hidden=false;$('prGo').focus()});
+$('prNo').addEventListener('click',()=>{$('prModal').hidden=true;$('print').focus()});
+$('prGo').addEventListener('click',()=>{$('prModal').hidden=true;setTimeout(()=>window.print(),150)});
+$('prModal').addEventListener('click',e=>{if(e.target===$('prModal'))$('prModal').hidden=true});
+// 단계 열림/닫힘 기억 (처음엔 ① 이름만 열림)
+let opened=['s1'];try{const o=JSON.parse(get('mp5_open')||'null');if(Array.isArray(o))opened=o}catch(e){}
+for(const id of ['s1','s2','s3','s4']){$(id).open=opened.includes(id);
+  $(id).addEventListener('toggle',()=>put('mp5_open',JSON.stringify(['s1','s2','s3','s4'].filter(x=>$(x).open))))}
 window.addEventListener('beforeprint',fit);
 contacts.forEach(c=>c.p=phone(c.p||''));
 contactsUI();render();
