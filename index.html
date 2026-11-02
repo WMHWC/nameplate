@@ -362,7 +362,7 @@ function tiles(){
   const tile=b=>`<button class="tile" data-id="${esc(b.이름)}" aria-pressed="${st.bg===b.이름}"><img class="th" src="${b.파일}" alt="" style="object-position:${b.위치||'50% 50%'}"><span class="nm">${esc(b.이름)}</span></button>`;
   if(inCust){
     $('tiles').innerHTML=`<div class="tbar"><button class="tback" data-id="__back" type="button">← 기본 배경</button><b>✨ 커스텀 배경</b></div>`
-     +(cust.length?cust.map(tile).join(''):`<div class="soon">🍓 커스텀 배경은 <b>업데이트 예정</b>이에요.<br><small>행사·장소에 맞춘 배경(예: 딸기농장)이 생기면 여기에 이름과 함께 나와요.</small></div>`);
+     +(cust.length?cust.map(tile).join(''):`<div class="soon">업데이트 예정입니다.</div>`);
     return}
   $('tiles').innerHTML=CFG.배경.map(tile).join('')
    +`<button class="tile" data-id="없음" aria-pressed="${st.bg==='없음'}"><span class="none">그림 없음</span><span class="nm">배경 없애기</span></button>`
