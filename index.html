@@ -106,6 +106,17 @@ textarea:focus,input:focus,button:focus-visible{outline:2px solid var(--accent);
 .modal .btns{display:flex;gap:8px;margin:14px 22px 0}
 .modal .btns .close{margin:0;flex:2;width:auto}
 .modal .ghost{flex:1;font:inherit;font-weight:700;font-size:15px;padding:10px;border:1.5px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);cursor:pointer}
+/* 정보 창 */
+.tbtn{display:flex;gap:6px}
+.modal .mhead.info{background:linear-gradient(135deg,#2b8a3e,#40a060)}
+.isec{padding:16px 22px 0}
+.isec h3{margin:0 0 8px;font-size:13px;color:var(--muted);letter-spacing:.05em}
+.irow{display:flex;gap:12px;align-items:center;background:var(--soft);border-radius:8px;padding:10px 12px;margin-bottom:8px}
+.irow .pv{flex:none;width:52px;height:44px;display:grid;place-items:center;background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden;font-size:20px;color:var(--ink)}
+.irow .pv img{max-width:100%;max-height:100%;object-fit:contain}
+.irow .nm{font-weight:700;font-size:14.5px}
+.irow .wh{font-size:12.5px;color:var(--muted);margin-top:1px}
+.irow .src{font-size:12px;color:var(--accent);margin-top:3px;line-height:1.45}
 /* 업데이트 내역 */
 .top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
 .upd{position:relative;font:inherit;font-size:13px;font-weight:700;padding:6px 10px;border:1.5px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);cursor:pointer}
@@ -153,7 +164,7 @@ textarea:focus,input:focus,button:focus-visible{outline:2px solid var(--accent);
  <p class="err" id="pwErr"></p><button type="button" id="pwBtn">들어가기</button></div></div>
 <div class="wrap" id="app" hidden>
 <section class="panel">
- <div class="top"><h1>명찰 만들기</h1><button class="upd" id="updBtn" type="button">업데이트 <span id="updVer"></span><span class="dot" id="updDot" hidden></span></button></div>
+ <div class="top"><h1>명찰 만들기</h1><div class="tbtn"><button class="upd" id="infoBtn" type="button" aria-label="정보">ⓘ 정보</button><button class="upd" id="updBtn" type="button">업데이트 <span id="updVer"></span><span class="dot" id="updDot" hidden></span></button></div></div>
 
  <details class="step" id="s1">
   <summary>① 이름<span class="sum" id="sum1"></span><span class="chev">▾</span></summary>
@@ -204,6 +215,11 @@ textarea:focus,input:focus,button:focus-visible{outline:2px solid var(--accent);
  <ol class="chk"><li><span>용지</span><b>A4</b></li><li><span>여백</span><b>없음</b></li><li><span>배율</span><b>100%</b> <small>(또는 기본값 / 실제 크기)</small></li><li><span>더보기</span><b>배경 그래픽</b> 체크 ✔</li></ol>
  <p class="note">명찰은 종이 <b>오른쪽 위 끝</b>에 붙어서 나와요. 왼쪽과 아래만 자르면 돼요. (가로 11cm × 세로 14cm)</p>
  <div class="btns"><button class="ghost" id="prNo" type="button">취소</button><button class="close" id="prGo" type="button">확인했어요, 인쇄하기</button></div></div></div>
+<div class="modal" id="infoModal" hidden><div class="mbox" role="dialog" aria-modal="true" aria-labelledby="infoTitle">
+ <div class="mhead info"><h2 id="infoTitle">정보</h2><div class="cur" id="infoCur"></div></div>
+ <div class="isec"><h3>글씨체</h3><div id="infoFonts"></div></div>
+ <div class="isec"><h3>그림 · 로고</h3><div id="infoImgs"></div></div>
+ <button class="close" id="infoClose" type="button">닫기</button></div></div>
 <div class="modal" id="updModal" hidden><div class="mbox" role="dialog" aria-modal="true" aria-labelledby="updTitle">
  <div class="mhead"><h2 id="updTitle">업데이트 내역</h2><div class="cur" id="updCur"></div></div><ul id="updList"></ul>
  <button class="close" id="updClose" type="button">닫기</button></div></div>
@@ -230,7 +246,7 @@ lockTick();
 /* ── 그림 설정 ──
    인터넷 주소로 쓸 때는 같은 폴더의 config.json 이 있으면 그걸 먼저 읽어요.
    그래서 config.json 과 images 폴더만 바꾸면 멀리서도 그림이 바뀌어요. */
-let CFG={"배경": [{"이름": "봄", "파일": "images/spring.jpg"}, {"이름": "여름", "파일": "images/summer.jpg"}, {"이름": "가을", "파일": "images/autumn.jpg"}, {"이름": "겨울", "파일": "images/winter.jpg"}], "위쪽_로고": "images/logo_top.png", "위쪽_문구": "images/slogan.png", "아래쪽_로고": "images/logo_bottom.png", "뒷면_연락망_그림": "images/sos_back_blank.jpg", "업데이트": [{"버전": "1.2", "날짜": "2026-11-02", "내용": "①~④ 단계를 눌러서 펴고 접을 수 있어요. 인쇄하기를 누르면 인쇄 설정을 먼저 알려줘요."}, {"버전": "1.1", "날짜": "2026-11-02", "내용": "글씨 굵기 버튼을 '굵게 / 보통'으로 바꿨어요. 비상연락망 긴 설명을 없애고, 연락처는 최대 5명까지라고 알려줘요."}, {"버전": "1.0", "날짜": "2026-11-02", "내용": "비상연락망 위쪽 제목을 직접 바꿀 수 있어요. (기본: 마음건강팀) 비워두면 '비상 연락망'만 나와요."}]};
+let CFG={"배경": [{"이름": "봄", "파일": "images/spring.jpg"}, {"이름": "여름", "파일": "images/summer.jpg"}, {"이름": "가을", "파일": "images/autumn.jpg"}, {"이름": "겨울", "파일": "images/winter.jpg"}], "위쪽_로고": "images/logo_top.png", "위쪽_문구": "images/slogan.png", "아래쪽_로고": "images/logo_bottom.png", "뒷면_연락망_그림": "images/sos_back_blank.jpg", "업데이트": [{"버전": "1.3", "날짜": "2026-11-02", "내용": "'정보' 버튼이 생겼어요. 명찰에 쓰는 글씨체와 그림·로고를 볼 수 있어요."}, {"버전": "1.2", "날짜": "2026-11-02", "내용": "①~④ 단계를 눌러서 펴고 접을 수 있어요. 인쇄하기를 누르면 인쇄 설정을 먼저 알려줘요."}, {"버전": "1.1", "날짜": "2026-11-02", "내용": "글씨 굵기 버튼을 '굵게 / 보통'으로 바꿨어요. 비상연락망 긴 설명을 없애고, 연락처는 최대 5명까지라고 알려줘요."}, {"버전": "1.0", "날짜": "2026-11-02", "내용": "비상연락망 위쪽 제목을 직접 바꿀 수 있어요. (기본: 마음건강팀) 비워두면 '비상 연락망'만 나와요."}], "정보": {"글씨체": [{"이름": "완도 청정바다체 (보통·굵게)", "쓰는 곳": "명찰 이름, 아래 글씨, 연락망 표", "출처": "저작권 완도군 · 디자인 윤디자인", "글꼴": "WandoCleansea"}, {"이름": "나눔스퀘어라운드 ExtraBold", "쓰는 곳": "비상연락망 제목", "출처": "© 2017 NAVER Corporation · 디자인 산돌커뮤니케이션 · SIL 오픈 폰트 라이선스(OFL 1.1)", "글꼴": "NSRound"}, {"이름": "맑은 고딕", "쓰는 곳": "이 화면의 글씨", "출처": "컴퓨터 기본 글꼴", "글꼴": "Malgun Gothic"}], "그림": [{"이름": "위쪽 로고", "쓰는 곳": "명찰 왼쪽 위", "파일": "images/logo_top.png"}, {"이름": "위쪽 문구", "쓰는 곳": "명찰 오른쪽 위 ('참여자치 실현! 함께 여는 새로운 완도')", "파일": "images/slogan.png"}, {"이름": "아래쪽 로고", "쓰는 곳": "명찰 아래 칸", "파일": "images/logo_bottom.png"}, {"이름": "배경 그림 (봄·여름·가을·겨울)", "쓰는 곳": "명찰 가운데", "파일": "images/spring.jpg"}, {"이름": "비상연락망 그림", "쓰는 곳": "뒷면 비상연락망", "파일": "images/sos_back_blank.jpg"}]}};
 const $=id=>document.getElementById(id);
 const st={bg:'',nw:'700',fw:'700'};
 let contacts=[{n:'',p:''}],backOn=false,flipOn=true;
@@ -343,10 +359,20 @@ function updUI(){
   $('updCur').textContent=top?`지금 버전 v${top.버전||'-'} · ${niceDate(top.날짜)}`:'';
   $('updList').innerHTML=list.map((u,i)=>`<li class="${i?'':'new'}"><div class="meta"><span class="ver">v${esc(u.버전||'')}</span>${i?'':'<span class="tag">NEW</span>'}<span class="d">${niceDate(u.날짜)}</span></div><div class="txt">${esc(u.내용)}</div></li>`).join('')||'<li>아직 없어요.</li>';
   $('updDot').hidden=!updKey()||get('mp5_updSeen')===updKey()}
-$('updBtn').addEventListener('click',()=>{$('updModal').hidden=false;put('mp5_updSeen',updKey());updUI();$('updClose').focus()});
+$('updBtn').addEventListener('click',()=>{$('updModal').hidden=false;put('mp5_updSeen',updKey());updUI();$('updClose').focus({preventScroll:true})});
 $('updClose').addEventListener('click',()=>{$('updModal').hidden=true;$('updBtn').focus()});
 $('updModal').addEventListener('click',e=>{if(e.target===$('updModal'))$('updModal').hidden=true});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('updModal').hidden=true;$('prModal').hidden=true}});
+// 정보 창: 쓰는 글씨체와 그림 (config.json 의 "정보")
+function infoUI(){
+  const I=CFG.정보||{},top=(CFG.업데이트||[])[0];
+  $('infoCur').textContent=top?`명찰 만들기 v${top.버전}`:'';
+  $('infoFonts').innerHTML=(I.글씨체||[]).map(f=>`<div class="irow"><div class="pv" style="font-family:'${esc(f.글꼴||'')}';font-weight:${/굵|ExtraBold/.test(f.이름)?800:400}">가</div><div><div class="nm">${esc(f.이름)}</div><div class="wh">${esc(f['쓰는 곳']||'')}</div>${f.출처?`<div class="src">${esc(f.출처)}</div>`:''}</div></div>`).join('');
+  $('infoImgs').innerHTML=(I.그림||[]).map(g=>`<div class="irow"><div class="pv"><img src="${esc(imgUrl(g.파일))}" alt=""></div><div><div class="nm">${esc(g.이름)}</div><div class="wh">${esc(g['쓰는 곳']||'')}</div>${g.출처?`<div class="src">${esc(g.출처)}</div>`:''}</div></div>`).join('')}
+let imgUrl=p=>p;
+$('infoBtn').addEventListener('click',()=>{infoUI();$('infoModal').hidden=false;$('infoClose').focus({preventScroll:true})});
+$('infoClose').addEventListener('click',()=>{$('infoModal').hidden=true;$('infoBtn').focus()});
+$('infoModal').addEventListener('click',e=>{if(e.target===$('infoModal'))$('infoModal').hidden=true});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('updModal').hidden=true;$('prModal').hidden=true;$('infoModal').hidden=true}});
 updUI();
 for(const [id,key] of [['nameW','nw'],['footW','fw']])
   $(id).addEventListener('click',e=>{const b=e.target.closest('button');if(b){st[key]=b.dataset.v;render()}});
@@ -358,7 +384,7 @@ $('contacts').addEventListener('click',e=>{const d=e.target.closest('[data-del]'
 $('addrow').addEventListener('click',()=>{if(contacts.length<5){contacts.push({n:'',p:''});contactsUI();render();$('cn'+(contacts.length-1)).focus()}});
 $('backOn').addEventListener('change',e=>{backOn=e.target.checked;render()});
 $('flipOn').addEventListener('change',e=>{flipOn=e.target.checked;render()});
-$('print').addEventListener('click',()=>{$('prModal').hidden=false;$('prGo').focus()});
+$('print').addEventListener('click',()=>{$('prModal').hidden=false;$('prGo').focus({preventScroll:true})});
 $('prNo').addEventListener('click',()=>{$('prModal').hidden=true;$('print').focus()});
 $('prGo').addEventListener('click',()=>{$('prModal').hidden=true;setTimeout(()=>window.print(),150)});
 $('prModal').addEventListener('click',e=>{if(e.target===$('prModal'))$('prModal').hidden=true});
@@ -374,6 +400,6 @@ if(location.protocol.startsWith('http'))fetch('config.json?v='+Date.now(),{cache
   if(!c)return;const base=new URL('.',location.href);
   // 그림 주소 뒤에 버전을 붙여서, 그림을 바꾸면 예전 그림(캐시) 대신 새 그림을 바로 받아요
   const v=encodeURIComponent(((c.업데이트||[])[0]||{}).버전||'');const abs=p=>{const u=new URL(p,base);if(v)u.searchParams.set('v',v);return u.href};
-  CFG={...CFG,...c};CFG.배경=(c.배경||CFG.배경).map(b=>({...b,파일:abs(b.파일)}));
+  imgUrl=abs;CFG={...CFG,...c};CFG.배경=(c.배경||CFG.배경).map(b=>({...b,파일:abs(b.파일)}));
   for(const k of ['위쪽_로고','위쪽_문구','아래쪽_로고','뒷면_연락망_그림'])if(c[k])CFG[k]=abs(c[k]);updUI();render()}).catch(()=>{});
 </script></body></html>
