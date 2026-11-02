@@ -4,6 +4,7 @@
 <style>
 @font-face{font-family:"WandoCleansea";font-weight:400;src:url(fonts/cleanseaR.woff2) format("woff2")}
 @font-face{font-family:"WandoCleansea";font-weight:700;src:url(fonts/cleanseaB.woff2) format("woff2")}
+@font-face{font-family:"NSRound";font-weight:800;src:url(fonts/NanumSquareRoundEB.woff2) format("woff2")}
 :root{--bg:#e9edf1;--panel:#fff;--ink:#1d2733;--muted:#5d6b7a;--line:#d3dae2;--accent:#1f5fa8;--soft:#f4f7fa;
 --ui:"Malgun Gothic","맑은 고딕","Apple SD Gothic Neo",sans-serif;--card:"WandoCleansea","Malgun Gothic",sans-serif}
 *{box-sizing:border-box}
@@ -79,6 +80,21 @@ textarea:focus,input:focus,button:focus-visible{outline:2px solid var(--accent);
 .tbl .no{color:#ed5e5e;font-size:9.5pt;font-weight:700}
 .tbl .nm span{display:inline-flex}
 .tbl .ph{font-size:14.5pt;letter-spacing:.02em;font-weight:700;color:#000}
+/* 연락망 제목 2줄 (원래 그림 글씨 자리에 그대로 겹쳐 그림) */
+.back .ttl{right:auto;font-family:"NSRound","Malgun Gothic",sans-serif;font-weight:800;color:#ed5f5e;white-space:pre;line-height:1.105;letter-spacing:.059em}
+
+/* 업데이트 내역 */
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.upd{position:relative;font:inherit;font-size:13px;font-weight:700;padding:6px 10px;border:1.5px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);cursor:pointer}
+.upd .dot{position:absolute;top:-4px;right:-4px;width:11px;height:11px;border-radius:50%;background:#e03131;border:2px solid #fff}
+.modal{position:fixed;inset:0;z-index:40;background:rgba(20,30,40,.45);display:grid;place-items:center;padding:16px}
+.modal .mbox{background:#fff;border-radius:12px;width:min(460px,100%);max-height:80vh;overflow:auto;padding:22px 22px 18px}
+.modal h2{margin:0 0 12px;font-size:18px}
+.modal ul{list-style:none;margin:0;padding:0}
+.modal li{padding:10px 0;border-top:1px solid var(--line);font-size:14.5px;line-height:1.55}
+.modal li:first-child{border-top:0}
+.modal .d{display:block;font-size:12.5px;color:var(--muted);font-weight:700}
+.modal .close{margin-top:14px;width:100%;font:inherit;font-weight:700;font-size:15px;padding:10px;border:0;border-radius:8px;background:var(--accent);color:#fff;cursor:pointer}
 
 /* 비밀번호 창 */
 .gate{position:fixed;inset:0;z-index:50;background:var(--bg);display:grid;place-items:center;padding:16px}
@@ -88,7 +104,7 @@ textarea:focus,input:focus,button:focus-visible{outline:2px solid var(--accent);
 .gate input:disabled,.gate button:disabled{opacity:.5;cursor:not-allowed}
 .gate button{font:inherit;font-weight:700;font-size:17px;padding:12px;border:0;border-radius:8px;background:var(--accent);color:#fff;cursor:pointer}
 .gate .err{color:#c0392b;font-size:14px;min-height:1.2em;margin:0}
-@media print{.gate{display:none!important}}
+@media print{.gate,.modal{display:none!important}}
 @media (max-width:780px){.wrap{grid-template-columns:1fr}.sheets{zoom:.4}}
 @page{size:A4;margin:0}
 @media print{
@@ -104,7 +120,7 @@ textarea:focus,input:focus,button:focus-visible{outline:2px solid var(--accent);
  <p class="err" id="pwErr"></p><button type="button" id="pwBtn">들어가기</button></div></div>
 <div class="wrap" id="app" hidden>
 <section class="panel">
- <h1>명찰 만들기</h1>
+ <div class="top"><h1>명찰 만들기</h1><button class="upd" id="updBtn" type="button">업데이트 내역<span class="dot" id="updDot" hidden></span></button></div>
 
  <div>
   <div class="row"><label class="lab" for="names">① 이름</label>
@@ -127,6 +143,8 @@ textarea:focus,input:focus,button:focus-visible{outline:2px solid var(--accent);
   <label class="switch"><input type="checkbox" id="backOn"> 뒷면에 비상연락망 넣기 (접어서 쓰기)</label>
   <div id="backBox" hidden>
    <div class="hint">켜면 <b>A4 한 장에 1명</b>씩 나와요. 위는 이름, 아래는 연락망이에요. 바깥 선을 따라 자르고 가운데 선에서 반으로 접어 꽂아요.</div>
+   <label class="hint" for="team" style="display:block;margin-top:10px;color:var(--ink);font-weight:700;font-size:13.5px">연락망 제목 (비워두면 '비상 연락망'만 나와요)</label>
+   <input type="text" id="team" value="마음건강팀" style="margin-top:4px" placeholder="예: 마음건강팀">
    <div class="contacts" id="contacts"></div>
    <button class="addrow" id="addrow">＋ 연락처 추가</button>
    <label class="switch" style="margin-top:10px;font-weight:400;font-size:13.5px"><input type="checkbox" id="flipOn"> 연락망 거꾸로 인쇄 (접은 뒤 옆으로 뒤집으면 바로 보임)</label>
@@ -141,6 +159,9 @@ textarea:focus,input:focus,button:focus-visible{outline:2px solid var(--accent);
 </section>
 <main class="sheets" id="sheets"></main>
 </div>
+<div class="modal" id="updModal" hidden><div class="mbox" role="dialog" aria-modal="true" aria-labelledby="updTitle">
+ <h2 id="updTitle">업데이트 내역</h2><ul id="updList"></ul>
+ <button class="close" id="updClose" type="button">닫기</button></div></div>
 <script>
 // 비밀번호 (매번 입력). 숫자를 그대로 적지 않고 계산값으로 비교해요.
 const PW_SUM=2085881774;
@@ -164,7 +185,7 @@ lockTick();
 /* ── 그림 설정 ──
    인터넷 주소로 쓸 때는 같은 폴더의 config.json 이 있으면 그걸 먼저 읽어요.
    그래서 config.json 과 images 폴더만 바꾸면 멀리서도 그림이 바뀌어요. */
-let CFG={"배경": [{"이름": "봄", "파일": "images/spring.jpg"}, {"이름": "여름", "파일": "images/summer.jpg"}, {"이름": "가을", "파일": "images/autumn.jpg"}, {"이름": "겨울", "파일": "images/winter.jpg"}], "위쪽_로고": "images/logo_top.png", "위쪽_문구": "images/slogan.png", "아래쪽_로고": "images/logo_bottom.png", "뒷면_연락망_그림": "images/sos_back.jpg"};
+let CFG={"버전": "2026-11-02b", "배경": [{"이름": "봄", "파일": "images/spring.jpg"}, {"이름": "여름", "파일": "images/summer.jpg"}, {"이름": "가을", "파일": "images/autumn.jpg"}, {"이름": "겨울", "파일": "images/winter.jpg"}], "위쪽_로고": "images/logo_top.png", "위쪽_문구": "images/slogan.png", "아래쪽_로고": "images/logo_bottom.png", "뒷면_연락망_그림": "images/sos_back_blank.jpg", "업데이트": [{"날짜": "2026-11-02", "내용": "비상연락망 위쪽 제목을 직접 바꿀 수 있어요. (기본: 마음건강팀) 비워두면 '비상 연락망'만 나와요."}, {"날짜": "2026-11-02", "내용": "'업데이트 내역' 버튼이 생겼어요. 새 소식이 있으면 빨간 점이 떠요."}, {"날짜": "2026-11-02", "내용": "그림을 바꾸면 새로고침 한 번에 바로 보이게 고쳤어요."}, {"날짜": "2026-11-02", "내용": "비상연락망 연락처 글씨를 진하게 바꿨어요."}]};
 const $=id=>document.getElementById(id);
 const st={bg:'',nw:'700',fw:'700'};
 let contacts=[{n:'',p:''}],backOn=false,flipOn=true;
@@ -172,6 +193,7 @@ function get(k){try{return localStorage.getItem(k)}catch(e){return null}}
 function put(k,v){try{localStorage.setItem(k,v)}catch(e){}}
 if(get('mp5_names')!==null)$('names').value=get('mp5_names');
 if(get('mp5_foot')!==null)$('foot').value=get('mp5_foot');
+if(get('mp5_team')!==null)$('team').value=get('mp5_team');
 for(const k of ['bg','nw','fw']){const v=get('mp5_'+k);if(v)st[k]=v}
 try{const c=JSON.parse(get('mp5_contacts')||'null');if(Array.isArray(c)&&c.length>=1&&c.length<=5)contacts=c}catch(e){}
 backOn=get('mp5_backOn')==='1';flipOn=get('mp5_flipOn')!=='0';
@@ -210,11 +232,23 @@ function back(){
 <colgroup><col style="width:${80*MM}mm"><col style="width:${248*MM}mm"><col></colgroup>
 <tr style="height:${HEAD*MM}mm"><th></th><th>이름</th><th>연락처</th></tr>`;
   rows.forEach((c,i)=>{t+=`<tr style="height:${ROW*MM}mm"><td class="no">${i+1}</td><td class="nm" style="font-weight:700"><span>${nameHTML(c.n,'.02em')}</span></td><td class="ph">${esc(c.p)}</td></tr>`});
-  return `<div class="card c2 back${flipOn?' flip':''}"><img class="sos" src="${CFG.뒷면_연락망_그림}" alt="">${t}</table></div>`}
+  return `<div class="card c2 back${flipOn?' flip':''}"><img class="sos" src="${CFG.뒷면_연락망_그림}" alt="">${titles()}${t}</table></div>`}
+// 제목 글씨: 원래 그림 글씨와 같은 자리·크기 (그림 px 기준, 글자 위쪽 220px / 333px, 왼쪽 시작 474px)
+const T_SIZE=101.6, T_LEFT=474, T_TOP1=213.2, T_TOP2=324.2, T_ONLY=268.2, T_MAXW=1180-474;
+function titles(){
+  const team=$('team').value.trim();
+  const l=`left:${T_LEFT*MM}mm;font-size:${T_SIZE*MM}mm`;
+  if(!team)return `<div class="ttl" style="${l};top:${T_ONLY*MM}mm">비상 연락망</div>`;
+  return `<div class="ttl t1" style="${l};top:${T_TOP1*MM}mm">${esc(team)}</div><div class="ttl" style="${l};top:${T_TOP2*MM}mm">비상 연락망</div>`}
 function fit(){
   document.querySelectorAll('.card').forEach(c=>{
     const k=c.getBoundingClientRect().width/110;  // 화면 px ÷ mm
-    if(c.classList.contains('back')){c.querySelectorAll('.nm').forEach(td=>{const s=td.querySelector('span');td.style.fontSize='13pt';
+    if(c.classList.contains('back')){
+      const t1=c.querySelector('.ttl.t1');   // 제목이 길면 오른쪽 끝을 넘지 않게 줄임 (글자 바닥선은 그대로)
+      if(t1){const fs=T_SIZE*MM;t1.style.fontSize=fs+'mm';t1.style.marginTop='0';
+        const w=t1.getBoundingClientRect().width/k,max=T_MAXW*MM;
+        if(w>max){const nf=fs*max/w;t1.style.fontSize=nf+'mm';t1.style.marginTop=((fs-nf)*.85)+'mm'}}
+      c.querySelectorAll('.nm').forEach(td=>{const s=td.querySelector('span');td.style.fontSize='13pt';
       const r=td.getBoundingClientRect().width*.86,w=s.getBoundingClientRect().width;if(w>r)td.style.fontSize=(13*r/w)+'pt'});return}
     const t=c.querySelector('.name .t');t.style.fontSize=NAME_PT+'pt';
     const w=t.getBoundingClientRect().width/k; if(w>NAME_MAX_MM)t.style.fontSize=(NAME_PT*NAME_MAX_MM/w)+'pt';
@@ -243,10 +277,20 @@ function render(){
     $(id).querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===st[key]));
   $('backOn').checked=backOn;$('flipOn').checked=flipOn;$('backBox').hidden=!backOn;
   fit(); if(document.fonts)document.fonts.ready.then(fit);
-  put('mp5_names',$('names').value);put('mp5_foot',$('foot').value);for(const k in st)put('mp5_'+k,st[k]);
+  put('mp5_names',$('names').value);put('mp5_foot',$('foot').value);put('mp5_team',$('team').value);for(const k in st)put('mp5_'+k,st[k]);
   put('mp5_backOn',backOn?'1':'0');put('mp5_flipOn',flipOn?'1':'0');put('mp5_contacts',JSON.stringify(contacts));
 }
-$('names').addEventListener('input',render);$('foot').addEventListener('input',render);
+$('names').addEventListener('input',render);$('foot').addEventListener('input',render);$('team').addEventListener('input',render);
+// 업데이트 내역: 새 소식이 있으면 빨간 점, 한 번 열어보면 사라짐
+const updKey=()=>{const u=(CFG.업데이트||[])[0];return u?u.날짜+'|'+u.내용:''};
+function updUI(){
+  $('updList').innerHTML=(CFG.업데이트||[]).map(u=>`<li><span class="d">${esc(u.날짜)}</span>${esc(u.내용)}</li>`).join('')||'<li>아직 없어요.</li>';
+  $('updDot').hidden=!updKey()||get('mp5_updSeen')===updKey()}
+$('updBtn').addEventListener('click',()=>{$('updModal').hidden=false;put('mp5_updSeen',updKey());updUI();$('updClose').focus()});
+$('updClose').addEventListener('click',()=>{$('updModal').hidden=true;$('updBtn').focus()});
+$('updModal').addEventListener('click',e=>{if(e.target===$('updModal'))$('updModal').hidden=true});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('updModal').hidden)$('updModal').hidden=true});
+updUI();
 for(const [id,key] of [['nameW','nw'],['footW','fw']])
   $(id).addEventListener('click',e=>{const b=e.target.closest('button');if(b){st[key]=b.dataset.v;render()}});
 $('tiles').addEventListener('click',e=>{const t=e.target.closest('.tile');if(t){st.bg=t.dataset.id;render()}});
@@ -263,7 +307,9 @@ contacts.forEach(c=>c.p=phone(c.p||''));
 contactsUI();render();
 // 인터넷 주소로 열었을 때: config.json 을 읽어 그림을 최신으로 바꿈
 if(location.protocol.startsWith('http'))fetch('config.json?v='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(c=>{
-  if(!c)return;const base=new URL('.',location.href);const abs=p=>new URL(p,base).href;
+  if(!c)return;const base=new URL('.',location.href);
+  // 그림 주소 뒤에 버전을 붙여서, 그림을 바꾸면 예전 그림(캐시) 대신 새 그림을 바로 받아요
+  const v=encodeURIComponent(c.버전||'');const abs=p=>{const u=new URL(p,base);if(v)u.searchParams.set('v',v);return u.href};
   CFG={...CFG,...c};CFG.배경=(c.배경||CFG.배경).map(b=>({...b,파일:abs(b.파일)}));
-  for(const k of ['위쪽_로고','위쪽_문구','아래쪽_로고','뒷면_연락망_그림'])if(c[k])CFG[k]=abs(c[k]);render()}).catch(()=>{});
+  for(const k of ['위쪽_로고','위쪽_문구','아래쪽_로고','뒷면_연락망_그림'])if(c[k])CFG[k]=abs(c[k]);updUI();render()}).catch(()=>{});
 </script></body></html>
