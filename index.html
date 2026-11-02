@@ -88,13 +88,23 @@ textarea:focus,input:focus,button:focus-visible{outline:2px solid var(--accent);
 .upd{position:relative;font:inherit;font-size:13px;font-weight:700;padding:6px 10px;border:1.5px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);cursor:pointer}
 .upd .dot{position:absolute;top:-4px;right:-4px;width:11px;height:11px;border-radius:50%;background:#e03131;border:2px solid #fff}
 .modal{position:fixed;inset:0;z-index:40;background:rgba(20,30,40,.45);display:grid;place-items:center;padding:16px}
-.modal .mbox{background:#fff;border-radius:12px;width:min(460px,100%);max-height:80vh;overflow:auto;padding:22px 22px 18px}
-.modal h2{margin:0 0 12px;font-size:18px}
-.modal ul{list-style:none;margin:0;padding:0}
-.modal li{padding:10px 0;border-top:1px solid var(--line);font-size:14.5px;line-height:1.55}
-.modal li:first-child{border-top:0}
-.modal .d{display:block;font-size:12.5px;color:var(--muted);font-weight:700}
-.modal .close{margin-top:14px;width:100%;font:inherit;font-weight:700;font-size:15px;padding:10px;border:0;border-radius:8px;background:var(--accent);color:#fff;cursor:pointer}
+.modal .mbox{background:#fff;border-radius:14px;width:min(460px,100%);max-height:80vh;overflow:auto;padding:0 0 18px}
+.modal .mhead{padding:20px 22px 16px;background:linear-gradient(135deg,#1f5fa8,#3b82c4);color:#fff;border-radius:14px 14px 0 0}
+.modal h2{margin:0;font-size:18px}
+.modal .cur{margin-top:4px;font-size:13px;opacity:.85}
+.modal ul{list-style:none;margin:0;padding:18px 22px 0 22px}
+.modal li{position:relative;padding:0 0 18px 22px;border-left:2px solid var(--line);margin-left:6px}
+.modal li:last-child{border-left-color:transparent;padding-bottom:4px}
+.modal li::before{content:"";position:absolute;left:-7px;top:3px;width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid var(--accent)}
+.modal li.new::before{background:var(--accent)}
+.modal .meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.modal .ver{font-size:12.5px;font-weight:800;color:#fff;background:var(--accent);border-radius:999px;padding:2px 9px;letter-spacing:.02em}
+.modal li:not(.new) .ver{background:#e6eef8;color:var(--accent)}
+.modal .tag{font-size:11px;font-weight:800;color:#e03131;border:1.5px solid #e03131;border-radius:999px;padding:0 6px}
+.modal .d{margin-left:auto;font-size:12.5px;color:var(--muted);font-weight:700}
+.modal .txt{font-size:14.5px;line-height:1.6;color:var(--ink);background:var(--soft);border-radius:8px;padding:10px 12px}
+.modal .close{margin:14px 22px 0;width:calc(100% - 44px)}
+.modal .close{font:inherit;font-weight:700;font-size:15px;padding:10px;border:0;border-radius:8px;background:var(--accent);color:#fff;cursor:pointer}
 
 /* 비밀번호 창 */
 .gate{position:fixed;inset:0;z-index:50;background:var(--bg);display:grid;place-items:center;padding:16px}
@@ -120,7 +130,7 @@ textarea:focus,input:focus,button:focus-visible{outline:2px solid var(--accent);
  <p class="err" id="pwErr"></p><button type="button" id="pwBtn">들어가기</button></div></div>
 <div class="wrap" id="app" hidden>
 <section class="panel">
- <div class="top"><h1>명찰 만들기</h1><button class="upd" id="updBtn" type="button">업데이트 내역<span class="dot" id="updDot" hidden></span></button></div>
+ <div class="top"><h1>명찰 만들기</h1><button class="upd" id="updBtn" type="button">업데이트 <span id="updVer"></span><span class="dot" id="updDot" hidden></span></button></div>
 
  <div>
   <div class="row"><label class="lab" for="names">① 이름</label>
@@ -160,7 +170,7 @@ textarea:focus,input:focus,button:focus-visible{outline:2px solid var(--accent);
 <main class="sheets" id="sheets"></main>
 </div>
 <div class="modal" id="updModal" hidden><div class="mbox" role="dialog" aria-modal="true" aria-labelledby="updTitle">
- <h2 id="updTitle">업데이트 내역</h2><ul id="updList"></ul>
+ <div class="mhead"><h2 id="updTitle">업데이트 내역</h2><div class="cur" id="updCur"></div></div><ul id="updList"></ul>
  <button class="close" id="updClose" type="button">닫기</button></div></div>
 <script>
 // 비밀번호 (매번 입력). 숫자를 그대로 적지 않고 계산값으로 비교해요.
@@ -185,7 +195,7 @@ lockTick();
 /* ── 그림 설정 ──
    인터넷 주소로 쓸 때는 같은 폴더의 config.json 이 있으면 그걸 먼저 읽어요.
    그래서 config.json 과 images 폴더만 바꾸면 멀리서도 그림이 바뀌어요. */
-let CFG={"버전": "2026-11-02b", "배경": [{"이름": "봄", "파일": "images/spring.jpg"}, {"이름": "여름", "파일": "images/summer.jpg"}, {"이름": "가을", "파일": "images/autumn.jpg"}, {"이름": "겨울", "파일": "images/winter.jpg"}], "위쪽_로고": "images/logo_top.png", "위쪽_문구": "images/slogan.png", "아래쪽_로고": "images/logo_bottom.png", "뒷면_연락망_그림": "images/sos_back_blank.jpg", "업데이트": [{"날짜": "2026-11-02", "내용": "비상연락망 위쪽 제목을 직접 바꿀 수 있어요. (기본: 마음건강팀) 비워두면 '비상 연락망'만 나와요."}, {"날짜": "2026-11-02", "내용": "'업데이트 내역' 버튼이 생겼어요. 새 소식이 있으면 빨간 점이 떠요."}, {"날짜": "2026-11-02", "내용": "그림을 바꾸면 새로고침 한 번에 바로 보이게 고쳤어요."}, {"날짜": "2026-11-02", "내용": "비상연락망 연락처 글씨를 진하게 바꿨어요."}]};
+let CFG={"배경": [{"이름": "봄", "파일": "images/spring.jpg"}, {"이름": "여름", "파일": "images/summer.jpg"}, {"이름": "가을", "파일": "images/autumn.jpg"}, {"이름": "겨울", "파일": "images/winter.jpg"}], "위쪽_로고": "images/logo_top.png", "위쪽_문구": "images/slogan.png", "아래쪽_로고": "images/logo_bottom.png", "뒷면_연락망_그림": "images/sos_back_blank.jpg", "업데이트": [{"버전": "1.0", "날짜": "2026-11-02", "내용": "비상연락망 위쪽 제목을 직접 바꿀 수 있어요. (기본: 마음건강팀) 비워두면 '비상 연락망'만 나와요."}]};
 const $=id=>document.getElementById(id);
 const st={bg:'',nw:'700',fw:'700'};
 let contacts=[{n:'',p:''}],backOn=false,flipOn=true;
@@ -282,9 +292,14 @@ function render(){
 }
 $('names').addEventListener('input',render);$('foot').addEventListener('input',render);$('team').addEventListener('input',render);
 // 업데이트 내역: 새 소식이 있으면 빨간 점, 한 번 열어보면 사라짐
-const updKey=()=>{const u=(CFG.업데이트||[])[0];return u?u.날짜+'|'+u.내용:''};
+const updKey=()=>{const u=(CFG.업데이트||[])[0];return u?(u.버전||u.날짜):''};
+function niceDate(d){const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(d||'');if(!m)return esc(d||'');
+  const w='일월화수목금토'[new Date(+m[1],m[2]-1,+m[3]).getDay()];return `${m[1]}.${m[2]}.${m[3]} (${w})`}
 function updUI(){
-  $('updList').innerHTML=(CFG.업데이트||[]).map(u=>`<li><span class="d">${esc(u.날짜)}</span>${esc(u.내용)}</li>`).join('')||'<li>아직 없어요.</li>';
+  const list=CFG.업데이트||[],top=list[0];
+  $('updVer').textContent=top&&top.버전?'v'+top.버전:'';
+  $('updCur').textContent=top?`지금 버전 v${top.버전||'-'} · ${niceDate(top.날짜)}`:'';
+  $('updList').innerHTML=list.map((u,i)=>`<li class="${i?'':'new'}"><div class="meta"><span class="ver">v${esc(u.버전||'')}</span>${i?'':'<span class="tag">NEW</span>'}<span class="d">${niceDate(u.날짜)}</span></div><div class="txt">${esc(u.내용)}</div></li>`).join('')||'<li>아직 없어요.</li>';
   $('updDot').hidden=!updKey()||get('mp5_updSeen')===updKey()}
 $('updBtn').addEventListener('click',()=>{$('updModal').hidden=false;put('mp5_updSeen',updKey());updUI();$('updClose').focus()});
 $('updClose').addEventListener('click',()=>{$('updModal').hidden=true;$('updBtn').focus()});
@@ -309,7 +324,7 @@ contactsUI();render();
 if(location.protocol.startsWith('http'))fetch('config.json?v='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(c=>{
   if(!c)return;const base=new URL('.',location.href);
   // 그림 주소 뒤에 버전을 붙여서, 그림을 바꾸면 예전 그림(캐시) 대신 새 그림을 바로 받아요
-  const v=encodeURIComponent(c.버전||'');const abs=p=>{const u=new URL(p,base);if(v)u.searchParams.set('v',v);return u.href};
+  const v=encodeURIComponent(((c.업데이트||[])[0]||{}).버전||'');const abs=p=>{const u=new URL(p,base);if(v)u.searchParams.set('v',v);return u.href};
   CFG={...CFG,...c};CFG.배경=(c.배경||CFG.배경).map(b=>({...b,파일:abs(b.파일)}));
   for(const k of ['위쪽_로고','위쪽_문구','아래쪽_로고','뒷면_연락망_그림'])if(c[k])CFG[k]=abs(c[k]);updUI();render()}).catch(()=>{});
 </script></body></html>
