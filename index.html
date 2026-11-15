@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>완도군 명찰 만들기</title>
-<script src="/lock.js?v=4"></script>
+<script src="/lock.js?v=5"></script>
 <style>
 @font-face{font-family:"WandoCleansea";font-weight:400;src:url(fonts/cleanseaR.woff2) format("woff2")}
 @font-face{font-family:"WandoCleansea";font-weight:700;src:url(fonts/cleanseaB.woff2) format("woff2")}
@@ -184,14 +184,15 @@ html[data-theme=dark] .seg button[aria-pressed=true]{background:#22354f}
 <div class="newbar" id="newBar" hidden><span id="newTxt"></span><button type="button" id="newGo">지금 새로고침</button></div>
 <div class="wrap" id="app" hidden>
 <section class="panel">
- <div class="top"><h1>명찰 만들기</h1><div class="tbtn"><button class="upd" id="infoBtn" type="button" aria-label="정보">ⓘ 정보</button><button class="upd" id="updBtn" type="button">업데이트 <span id="updVer"></span><span class="dot" id="updDot" hidden></span></button></div></div>
+ <div class="top"><h1>명찰 만들기</h1><div class="tbtn"><button class="upd" id="infoBtn" type="button" aria-label="정보">ⓘ 정보</button></div></div>
 
  <div class="tabs" role="tablist"><button type="button" role="tab" data-t="s1" aria-selected="true"><b>① 이름</b><small id="sum1"></small></button><button type="button" role="tab" data-t="s2" aria-selected="false"><b>② 배경</b><small id="sum2"></small></button><button type="button" role="tab" data-t="s3" aria-selected="false"><b>③ 소속</b><small id="sum3"></small></button><button type="button" role="tab" data-t="s4" aria-selected="false"><b>④ 뒷면</b><small id="sum4"></small></button></div>
  <div class="step" id="s1" role="tabpanel">
   <div class="body">
    <div class="row"><span class="mini">글씨 굵기</span>
     <div class="seg weight" id="nameW"><button data-v="700">굵게</button><button data-v="400">보통</button></div></div>
-   <textarea id="names" spellcheck="false" aria-label="이름" placeholder="쉼표(,)나 줄바꿈으로 나눠요.&#10;예) 김승호, 김종구, 김환">김승호, 김종구, 김환, 남궁민수</textarea>
+   <textarea id="names" spellcheck="false" aria-label="이름" placeholder="쉼표(,)나 줄바꿈으로 나눠요.&#10;예) 장영실, 이순신, 허준">장영실, 이순신, 허준</textarea>
+   <p class="hint" style="margin:6px 0 0;font-size:14px;color:var(--muted)">쉼표(,)나 줄바꿈으로 나눠요. <b>엑셀에서 이름을 복사해서 붙여넣어도 돼요.</b></p>
   </div>
  </div>
 
@@ -241,25 +242,23 @@ html[data-theme=dark] .seg button[aria-pressed=true]{background:#22354f}
  <div class="isec"><h3>글씨체</h3><div id="infoFonts"></div></div>
  <div class="isec"><h3>그림 · 로고</h3><div id="infoImgs"></div></div>
  <button class="close" id="infoClose" type="button">닫기</button></div></div>
-<div class="modal" id="updModal" hidden><div class="mbox" role="dialog" aria-modal="true" aria-labelledby="updTitle">
- <div class="mhead"><h2 id="updTitle">업데이트 내역</h2><div class="cur" id="updCur"></div></div><ul id="updList"></ul>
- <button class="close" id="updClose" type="button">닫기</button></div></div>
 <script>
 // 비밀번호와 5분 자동 잠금은 홈의 /lock.js 가 맡아요 (홈 · 명찰 · 그래프 공통)
 function enterApp(){document.getElementById('app').hidden=false;if(typeof render==='function')render()}
 /* ── 그림 설정 ──
    인터넷 주소로 쓸 때는 같은 폴더의 config.json 이 있으면 그걸 먼저 읽어요.
    그래서 config.json 과 images 폴더만 바꾸면 멀리서도 그림이 바뀌어요. */
-let CFG={"배경": [{"이름": "봄", "파일": "images/spring.jpg"}, {"이름": "여름", "파일": "images/summer.jpg"}, {"이름": "가을", "파일": "images/autumn.jpg"}, {"이름": "겨울", "파일": "images/winter.jpg"}], "커스텀_배경": [], "위쪽_로고": "images/logo_top.png", "위쪽_문구": "images/slogan.png", "아래쪽_로고": "images/logo_bottom.png", "뒷면_연락망_그림": "images/sos_back_blank.jpg", "업데이트": [{"버전": "2.7", "날짜": "2026-11-16", "내용": "맨 위 머리줄이 새로 바뀌었어요(로고 · 도구 탭). 해·달 버튼으로 어두운 화면을 켤 수 있어요. 새 버전이 나오면 알아서 최신 화면으로 바뀌어요."}, {"버전": "2.6", "날짜": "2026-11-16", "내용": "맨 위에 도구 바꾸기 줄이 생겼어요. 홈을 안 거치고 바로 '결과보고 그래프'로 갈 수 있어요. 비밀번호 창은 '비밀번호'만 보여요."}, {"버전": "2.5", "날짜": "2026-11-16", "내용": "비밀번호 창이 홈 화면과 똑같아졌어요(숫자 4자리 누르면 바로 입장). 5분 동안 안 쓰면 화면이 잠겨요. 하던 작업은 그대로 남아 있어요."}, {"버전": "2.4", "날짜": "2026-11-16", "내용": "비밀번호 숫자 4자리를 누르면 바로 들어가요. 홈 화면에서 비밀번호를 넣었으면 다시 안 물어봐요."}, {"버전": "2.3", "날짜": "2026-11-03", "내용": "'정보'에 명찰 크기(11 × 14 cm)와 종이 크기(A4)가 나와요. 배경 그림은 지금 고른 배경이 보여요."}, {"버전": "2.2", "날짜": "2026-11-02", "내용": "② 배경에 '커스텀' 칸이 생겼어요. 행사·장소에 맞춘 배경(예: 딸기농장)을 이름 붙여서 따로 모아둘 거예요. (지금은 업데이트 예정)"}, {"버전": "2.1", "날짜": "2026-11-02", "내용": "'전부 한눈에'와 '기본 크기'를 버튼 하나로 왔다 갔다 할 수 있어요."}, {"버전": "2.0", "날짜": "2026-11-02", "내용": "새 화면으로 바뀌었어요. 설정 칸 오른쪽 · ①~④ 단계 버튼 · 미리보기 크기 조절 · 인쇄 화면만 보기. '⟳ 새로고침' 버튼으로 항상 최신으로 바꿀 수 있고, 새 버전이 나오면 위에 초록색 알림이 떠요."}, {"버전": "1.9", "날짜": "2026-11-02", "내용": "미리보기 위에 크기 조절 막대가 생겼어요. ＋/－로 크게·작게, '기본 크기', '전부 한눈에'로 바로 바꿀 수 있어요."}, {"버전": "1.8", "날짜": "2026-11-02", "내용": "'🖨 인쇄 화면만' 버튼으로 설정 칸을 숨기고 인쇄될 종이만 크게 볼 수 있어요. 오른쪽 위 '⚙ 설정 열기'로 돌아와요."}, {"버전": "1.7", "날짜": "2026-11-02", "내용": "설정 칸을 오른쪽으로 옮기고 넓혔어요. 미리보기는 A4 한 장이 화면에 딱 맞게 보이고, 장마다 '1 / 3장'처럼 페이지가 표시돼요."}, {"버전": "1.6", "날짜": "2026-11-02", "내용": "이름 칸 설명을 칸 안으로 옮기고, 아래 'O명 → A4 O장' 글씨를 없앴어요."}, {"버전": "1.5", "날짜": "2026-11-02", "내용": "①~④ 단계를 위쪽 버튼으로 골라요. 새로고침하면 항상 ① 이름부터 시작해요. (입력한 내용은 그대로 남아요)"}, {"버전": "1.4", "날짜": "2026-11-02", "내용": "화면과 비상연락망 제목까지 모든 글씨를 완도 청정바다체로 바꿨어요."}, {"버전": "1.3", "날짜": "2026-11-02", "내용": "'정보' 버튼이 생겼어요. 명찰에 쓰는 글씨체와 그림·로고를 볼 수 있어요."}, {"버전": "1.2", "날짜": "2026-11-02", "내용": "①~④ 단계를 눌러서 펴고 접을 수 있어요. 인쇄하기를 누르면 인쇄 설정을 먼저 알려줘요."}, {"버전": "1.1", "날짜": "2026-11-02", "내용": "글씨 굵기 버튼을 '굵게 / 보통'으로 바꿨어요. 비상연락망 긴 설명을 없애고, 연락처는 최대 5명까지라고 알려줘요."}, {"버전": "1.0", "날짜": "2026-11-02", "내용": "비상연락망 위쪽 제목을 직접 바꿀 수 있어요. (기본: 마음건강팀) 비워두면 '비상 연락망'만 나와요."}], "정보": {"크기": [{"이름": "명찰", "값": "11 × 14 cm"}, {"이름": "종이", "값": "A4 (21 × 29.7 cm)"}], "글씨체": [{"이름": "완도 청정바다체 (보통·굵게)", "쓰는 곳": "화면과 명찰의 모든 글씨", "출처": "저작권 완도군 · 디자인 윤디자인", "글꼴": "WandoCleansea"}], "그림": [{"이름": "위쪽 로고", "쓰는 곳": "명찰 왼쪽 위", "파일": "images/logo_top.png"}, {"이름": "위쪽 문구", "쓰는 곳": "명찰 오른쪽 위 ('참여자치 실현! 함께 여는 새로운 완도')", "파일": "images/slogan.png"}, {"이름": "아래쪽 로고", "쓰는 곳": "명찰 아래 칸", "파일": "images/logo_bottom.png"}, {"자동": "배경"}, {"이름": "비상연락망 그림", "쓰는 곳": "뒷면 비상연락망", "파일": "images/sos_back_blank.jpg"}]}};
+let CFG={"배경": [{"이름": "봄", "파일": "images/spring.jpg"}, {"이름": "여름", "파일": "images/summer.jpg"}, {"이름": "가을", "파일": "images/autumn.jpg"}, {"이름": "겨울", "파일": "images/winter.jpg"}], "커스텀_배경": [], "위쪽_로고": "images/logo_top.png", "위쪽_문구": "images/slogan.png", "아래쪽_로고": "images/logo_bottom.png", "뒷면_연락망_그림": "images/sos_back_blank.jpg", "버전": "2.8", "정보": {"크기": [{"이름": "명찰", "값": "11 × 14 cm"}, {"이름": "종이", "값": "A4 (21 × 29.7 cm)"}], "글씨체": [{"이름": "완도 청정바다체 (보통·굵게)", "쓰는 곳": "화면과 명찰의 모든 글씨", "출처": "저작권 완도군 · 디자인 윤디자인", "글꼴": "WandoCleansea"}], "그림": [{"이름": "위쪽 로고", "쓰는 곳": "명찰 왼쪽 위", "파일": "images/logo_top.png"}, {"이름": "위쪽 문구", "쓰는 곳": "명찰 오른쪽 위 ('참여자치 실현! 함께 여는 새로운 완도')", "파일": "images/slogan.png"}, {"이름": "아래쪽 로고", "쓰는 곳": "명찰 아래 칸", "파일": "images/logo_bottom.png"}, {"자동": "배경"}, {"이름": "비상연락망 그림", "쓰는 곳": "뒷면 비상연락망", "파일": "images/sos_back_blank.jpg"}]}};
 const $=id=>document.getElementById(id);
 // 지금 열린 화면의 버전 (index.html 안에 적힌 것). config.json 의 최신 버전과 다르면 "새 버전" 알림을 띄움
-const BUILD=((CFG.업데이트||[])[0]||{}).버전||'';
+const verOf=c=>(c&&(c.버전||((c.업데이트||[])[0]||{}).버전))||'';
+const BUILD=verOf(CFG);
 // 강제 새로고침: 주소 뒤에 시간을 붙여서 예전 화면(캐시) 대신 서버에서 새로 받아옴
 // 주소는 그대로 두고 이 주소의 저장분(캐시)을 새 걸로 바꿔요 → 북마크로 다시 들어와도 최신 화면이에요
 function hardReload(){const go=()=>location.replace(location.pathname);fetch(location.pathname,{cache:'reload'}).then(go,go)}
 function checkNew(){if(!location.protocol.startsWith('http'))return;
   fetch('config.json?v='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(c=>{
-    const v=c&&((c.업데이트||[])[0]||{}).버전;if(v&&BUILD&&v!==BUILD){$('newTxt').textContent=`새 버전 v${v}이 나왔어요!`;$('newBar').hidden=false;
+    const v=verOf(c);if(v&&BUILD&&v!==BUILD){$('newTxt').textContent=`새 버전 v${v}이 나왔어요!`;$('newBar').hidden=false;
       // 처음 한 번은 알아서 최신으로 바꿔요 (입력한 내용은 그대로 남아요)
       let k='np_auto_'+v,did=null;try{did=sessionStorage.getItem(k);sessionStorage.setItem(k,'1')}catch(e){did='1'}if(!did)hardReload()}}).catch(()=>{})}
 $('newGo').addEventListener('click',hardReload);
@@ -268,7 +267,7 @@ const st={bg:'',nw:'700',fw:'700'};
 let contacts=[{n:'',p:''}],backOn=false,flipOn=true;
 function get(k){try{return localStorage.getItem(k)}catch(e){return null}}
 function put(k,v){try{localStorage.setItem(k,v)}catch(e){}}
-if(get('mp5_names')!==null)$('names').value=get('mp5_names');
+if(get('mp5_names')!==null&&get('mp5_names').trim()!=='김승호, 김종구, 김환, 남궁민수')$('names').value=get('mp5_names');
 if(get('mp5_foot')!==null)$('foot').value=get('mp5_foot');
 if(get('mp5_team')!==null)$('team').value=get('mp5_team');
 for(const k of ['bg','nw','fw']){const v=get('mp5_'+k);if(v)st[k]=v}
@@ -277,7 +276,7 @@ backOn=get('mp5_backOn')==='1';flipOn=get('mp5_flipOn')!=='0';
 
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const NAME_PT=98.5, NAME_MAX_MM=100, FOOT_PT=20;
-function parse(){return $('names').value.split(/[,，、\n]+/).map(t=>t.trim()).filter(Boolean)
+function parse(){return $('names').value.split(/[,，、\n\t]+/).map(t=>t.trim()).filter(Boolean)
   .map(t=>/^[가-힣\s]+$/.test(t)?t.replace(/\s+/g,''):t)}
 function nameHTML(n,tight){
   n=String(n).trim(); if(/^[가-힣\s]+$/.test(n))n=n.replace(/\s+/g,'');
@@ -379,22 +378,9 @@ function render(){
   put('mp5_backOn',backOn?'1':'0');put('mp5_flipOn',flipOn?'1':'0');put('mp5_contacts',JSON.stringify(contacts));
 }
 $('names').addEventListener('input',render);$('foot').addEventListener('input',render);$('team').addEventListener('input',render);
-// 업데이트 내역: 새 소식이 있으면 빨간 점, 한 번 열어보면 사라짐
-const updKey=()=>{const u=(CFG.업데이트||[])[0];return u?(u.버전||u.날짜):''};
-function niceDate(d){const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(d||'');if(!m)return esc(d||'');
-  const w='일월화수목금토'[new Date(+m[1],m[2]-1,+m[3]).getDay()];return `${m[1]}.${m[2]}.${m[3]} (${w})`}
-function updUI(){
-  const list=CFG.업데이트||[],top=list[0];
-  $('updVer').textContent=top&&top.버전?'v'+top.버전:'';
-  $('updCur').textContent=top?`지금 버전 v${top.버전||'-'} · ${niceDate(top.날짜)}`:'';
-  $('updList').innerHTML=list.map((u,i)=>`<li class="${i?'':'new'}"><div class="meta"><span class="ver">v${esc(u.버전||'')}</span>${i?'':'<span class="tag">NEW</span>'}<span class="d">${niceDate(u.날짜)}</span></div><div class="txt">${esc(u.내용)}</div></li>`).join('')||'<li>아직 없어요.</li>';
-  $('updDot').hidden=!updKey()||get('mp5_updSeen')===updKey()}
-$('updBtn').addEventListener('click',()=>{$('updModal').hidden=false;put('mp5_updSeen',updKey());updUI();$('updClose').focus({preventScroll:true})});
-$('updClose').addEventListener('click',()=>{$('updModal').hidden=true;$('updBtn').focus()});
-$('updModal').addEventListener('click',e=>{if(e.target===$('updModal'))$('updModal').hidden=true});
 // 정보 창: 쓰는 글씨체와 그림 (config.json 의 "정보")
 function infoUI(){
-  const I=CFG.정보||{},top=(CFG.업데이트||[])[0];
+  const I=CFG.정보||{},top=verOf(CFG)?{버전:verOf(CFG)}:null;
   $('infoCur').textContent=top?`명찰 만들기 v${top.버전}`:'';
   $('infoFonts').innerHTML=(I.글씨체||[]).map(f=>`<div class="irow"><div class="pv" style="font-family:'${esc(f.글꼴||'')}';font-weight:${/굵|ExtraBold/.test(f.이름)?800:400}">가</div><div><div class="nm">${esc(f.이름)}</div><div class="wh">${esc(f['쓰는 곳']||'')}</div>${f.출처?`<div class="src">${esc(f.출처)}</div>`:''}</div></div>`).join('');
   $('infoSize').innerHTML=(I.크기||[]).map(z=>`<div class="zrow"><span>${esc(z.이름)}</span><b>${esc(z.값)}</b></div>`).join('');
@@ -408,8 +394,7 @@ function fillPx(){document.querySelectorAll('#infoImgs [data-px]').forEach(el=>{
 $('infoBtn').addEventListener('click',()=>{infoUI();fillPx();$('infoModal').hidden=false;$('infoClose').focus({preventScroll:true})});
 $('infoClose').addEventListener('click',()=>{$('infoModal').hidden=true;$('infoBtn').focus()});
 $('infoModal').addEventListener('click',e=>{if(e.target===$('infoModal'))$('infoModal').hidden=true});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('updModal').hidden=true;$('prModal').hidden=true;$('infoModal').hidden=true}});
-updUI();
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('prModal').hidden=true;$('infoModal').hidden=true}});
 for(const [id,key] of [['nameW','nw'],['footW','fw']])
   $(id).addEventListener('click',e=>{const b=e.target.closest('button');if(b){st[key]=b.dataset.v;render()}});
 $('tiles').addEventListener('click',e=>{const t=e.target.closest('[data-id]');if(!t)return;const id=t.dataset.id;
@@ -460,7 +445,7 @@ enterApp();
 if(location.protocol.startsWith('http'))fetch('config.json?v='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(c=>{
   if(!c)return;const base=new URL('.',location.href);
   // 그림 주소 뒤에 버전을 붙여서, 그림을 바꾸면 예전 그림(캐시) 대신 새 그림을 바로 받아요
-  const v=encodeURIComponent(((c.업데이트||[])[0]||{}).버전||'');const abs=p=>{const u=new URL(p,base);if(v)u.searchParams.set('v',v);return u.href};
+  const v=encodeURIComponent(verOf(c));const abs=p=>{const u=new URL(p,base);if(v)u.searchParams.set('v',v);return u.href};
   imgUrl=abs;CFG={...CFG,...c};CFG.배경=(c.배경||CFG.배경).map(b=>({...b,파일:abs(b.파일)}));CFG.커스텀_배경=(c.커스텀_배경||[]).map(b=>({...b,파일:abs(b.파일)}));
-  for(const k of ['위쪽_로고','위쪽_문구','아래쪽_로고','뒷면_연락망_그림'])if(c[k])CFG[k]=abs(c[k]);updUI();render()}).catch(()=>{});
+  for(const k of ['위쪽_로고','위쪽_문구','아래쪽_로고','뒷면_연락망_그림'])if(c[k])CFG[k]=abs(c[k]);render()}).catch(()=>{});
 </script></body></html>
